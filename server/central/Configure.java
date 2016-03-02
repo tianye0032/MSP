@@ -1,11 +1,11 @@
-package msp.server.central;
+package MSP.server.central;
 
 import java.util.HashMap;
 
-import msp.file.mapping.DuplicateTwiceMapping;
-import msp.file.mapping.MappingMethod;
-import msp.file.mapping.MergeSplitMapping;
-import msp.utils.Reader;
+import MSP.file.mapping.DuplicateTwiceMapping;
+import MSP.file.mapping.MappingMethod;
+import MSP.file.mapping.MergeSplitMapping;
+import MSP.utils.Reader;
 
 public class Configure {
 	

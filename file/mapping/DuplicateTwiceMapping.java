@@ -4,13 +4,13 @@
  * A file is just duplicated once in this mapping method.
  */
 
-package msp.file.mapping;
+package MSP.file.mapping;
 
 import java.io.File;
 import java.io.IOException;
 
-import msp.server.central.Configure;
-import msp.utils.FileUtils;
+import MSP.server.central.Configure;
+import MSP.utils.FileUtils;
 
 public class DuplicateTwiceMapping implements MappingMethod{
 	public boolean merge(String[] source,String target){

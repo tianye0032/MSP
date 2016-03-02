@@ -1,11 +1,11 @@
-package msp.server.central;
+package MSP.server.central;
 
 import java.io.File;
 import java.io.IOException;
 
 
-import msp.file.mapping.MappingMethod;
-import msp.utils.FileUtils;
+import MSP.file.mapping.MappingMethod;
+import MSP.utils.FileUtils;
 
 public class InstantJob extends Thread{
 	private JobType type;

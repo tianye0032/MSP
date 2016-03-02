@@ -1,4 +1,4 @@
-package msp.utils;
+package MSP.utils;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

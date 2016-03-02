@@ -1,4 +1,4 @@
-package msp.server.central;
+package MSP.server.central;
 
 public class FileManager {
 

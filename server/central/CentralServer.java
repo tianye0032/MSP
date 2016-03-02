@@ -1,5 +1,4 @@
-//test
-package msp.server.central;
+package MSP.server.central;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,11 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import msp.server.central.event.IndexTree;
-import msp.server.central.event.Version;
-import msp.server.watcher.WatchDir;
-import msp.utils.FileUtils;
-import msp.utils.StringUtils;
+import MSP.server.central.event.IndexTree;
+import MSP.server.central.event.Version;
+import MSP.server.watcher.WatchDir;
+import MSP.utils.FileUtils;
+import MSP.utils.StringUtils;
 
 public class CentralServer {
 	Configure config;

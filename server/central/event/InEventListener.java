@@ -1,4 +1,4 @@
-package msp.server.central.event;
+package MSP.server.central.event;
 
 public interface InEventListener {
 

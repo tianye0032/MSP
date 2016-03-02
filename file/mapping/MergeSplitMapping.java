@@ -1,8 +1,8 @@
-package msp.file.mapping;
+package MSP.file.mapping;
 
 import java.io.IOException;
 
-import msp.utils.FileUtils;
+import MSP.utils.FileUtils;
 
 public class MergeSplitMapping implements MappingMethod {
 

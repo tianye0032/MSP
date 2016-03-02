@@ -4,16 +4,16 @@
  * A file is just duplicated once in this mapping method.
  */
 
-package msp.file.mapping;
+package MSP.file.mapping;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import msp.server.central.Configure;
-import msp.utils.FileUtils;
-import msp.utils.Reader;
+import MSP.server.central.Configure;
+import MSP.utils.FileUtils;
+import MSP.utils.Reader;
 
 public class DuplicateMapping implements MappingMethod{
 	public boolean merge(String[] source,String target){

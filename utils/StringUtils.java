@@ -1,4 +1,4 @@
-package msp.utils;
+package MSP.utils;
 
 import java.nio.ByteBuffer;
 

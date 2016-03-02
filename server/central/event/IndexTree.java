@@ -1,4 +1,4 @@
-package msp.server.central.event;
+package MSP.server.central.event;
 
 import java.util.ArrayList;
 import java.util.Date;

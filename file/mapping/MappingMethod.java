@@ -5,7 +5,7 @@
  * Interface for mapping
  * Two methods are needed: one for merging and the other for splitting
  */
-package msp.file.mapping;
+package MSP.file.mapping;
 
 import java.io.File;
 

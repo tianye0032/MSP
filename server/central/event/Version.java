@@ -1,4 +1,4 @@
-package msp.server.central.event;
+package MSP.server.central.event;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +12,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
-import msp.server.central.Configure;
+import MSP.server.central.Configure;
 
 public class Version {	
 	private String file;

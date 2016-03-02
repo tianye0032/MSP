@@ -1,4 +1,4 @@
-package msp.server.watcher;
+package MSP.server.watcher;
 
 
 import java.nio.ByteBuffer;

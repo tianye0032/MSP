@@ -1,4 +1,4 @@
-package msp.utils;
+package MSP.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
