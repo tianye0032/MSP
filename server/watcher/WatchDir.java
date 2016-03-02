@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Example to watch a directory (or tree) for changes to files.
+ * Example to watch a directory (or tree) for changes to files.  
  */
 
 public class WatchDir extends Thread{
