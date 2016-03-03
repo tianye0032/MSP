@@ -75,7 +75,7 @@ public class Configure {
 		List<MappingMethod> list = new ArrayList<MappingMethod>();
 		list.add(new DuplicateTwiceMapping());
 		list.add(new DuplicateMapping());
-		list.add(new MergeSplitMapping());
+		list.add(new ByteMapping());
 		return list;
 	}
 	

@@ -14,7 +14,7 @@ import java.util.List;
 import MSP.utils.FileUtils;
 
 public class HammingCodeMapping implements MappingMethod{
-
+	private static final String name  = "";
 	@Override
 	public boolean isAuthentic(String[] target) {
 		// TODO Auto-generated method stub
@@ -222,6 +222,12 @@ public class HammingCodeMapping implements MappingMethod{
 //			byte[] by = set.toByteArray();
 //			System.out.println(by.toString());
 		
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return name;
 	}
 
 }
