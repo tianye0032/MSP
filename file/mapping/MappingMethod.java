@@ -14,4 +14,5 @@ public interface MappingMethod {
 	public boolean isAuthentic(String[] target);
 	public boolean merge(String[] source,String target);
 	public boolean split(String source, String[] target);
+	public String getName();
 }

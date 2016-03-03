@@ -16,6 +16,7 @@ import MSP.utils.FileUtils;
 import MSP.utils.Reader;
 
 public class DuplicateMapping implements MappingMethod{
+	private final String name = "DuplicateMapping";
 	public boolean merge(String[] source,String target){
 		
 		try {
@@ -87,5 +88,10 @@ public class DuplicateMapping implements MappingMethod{
 			}
 		}		
 		return true;
+	}
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return name;
 	}
 }

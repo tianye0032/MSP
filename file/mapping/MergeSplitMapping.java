@@ -6,7 +6,7 @@ import MSP.utils.FileUtils;
 
 public class MergeSplitMapping implements MappingMethod {
 
-
+	private final String name = "MergeSplitMapping";
 
 	@Override
 	public boolean isAuthentic(String[] target) {
@@ -34,6 +34,12 @@ public class MergeSplitMapping implements MappingMethod {
 			e.printStackTrace();
 		}
 		return true;
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return name;
 	}
 	
 

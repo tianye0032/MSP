@@ -17,7 +17,7 @@ import MSP.server.watcher.WatchDir;
 import MSP.utils.FileUtils;
 import MSP.utils.StringUtils;
 
-public class CentralServer {
+public class CentralServer extends Thread{
 	Configure config;
 	Map<String,InstantJob> jobPool;
 	IndexTree indexTree;
@@ -30,9 +30,12 @@ public class CentralServer {
 	Pipe.SinkChannel[] psics;
 	Pipe.SourceChannel psoc;
 
-	public CentralServer(){
-		config = new Configure("data/conf/center.conf");
+	public CentralServer(){		
+		this(new Configure("data/conf/center.conf"));		 
+	}
+	public CentralServer(Configure config){
 		jobPool = new HashMap<String,InstantJob>();
+		this.config = config;
 		indexTree = new IndexTree();
 		try {
 			pipe = Pipe.open();
@@ -189,23 +192,27 @@ public class CentralServer {
 		}
 		
 
+	
 		
+	}
+    public void run() {
+    	work();
+    }
+	public void work(){
+		 while(true){
+		    	try{		    		
+			    	String message = this.getMessage(); 
+			    	this.processMessage(message);	   	
 
-		
+		    	}catch(Exception e){
+		    		System.out.println("Error In Main Method!     "+e.getMessage());
+		    	}
+		    }
 	}
 	
 	public static void main(String[] args)throws IOException{
 		CentralServer server = new CentralServer();
-	    while(true){
-	    	try{
-	    		
-	    	String message = server.getMessage(); 
-	    	server.processMessage(message);	    	
-
-	    	}catch(Exception e){
-	    		System.out.println("Error In Main Method!     "+e.getMessage());
-	    	}
-	    }
+		server.work();
 	        
 	}
 	

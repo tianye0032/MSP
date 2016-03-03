@@ -13,6 +13,8 @@ import MSP.server.central.Configure;
 import MSP.utils.FileUtils;
 
 public class DuplicateTwiceMapping implements MappingMethod{
+	private final String name = "DuplicateTwiceMapping";
+	
 	public boolean merge(String[] source,String target){
 		try {
 			FileUtils.copyFile(source[0], target);
@@ -39,6 +41,11 @@ public class DuplicateTwiceMapping implements MappingMethod{
 	public boolean isAuthentic(String[] target) {
 		// TODO Auto-generated method stub
 		return true;
+	}
+	
+	public String getName(){
+		return name;
+		
 	}
 
 }

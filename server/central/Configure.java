@@ -1,7 +1,10 @@
 package MSP.server.central;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import MSP.file.mapping.DuplicateMapping;
 import MSP.file.mapping.DuplicateTwiceMapping;
 import MSP.file.mapping.MappingMethod;
 import MSP.file.mapping.MergeSplitMapping;
@@ -17,7 +20,10 @@ public class Configure {
 	private HashMap<String,String> map;
 	String centralPath;
 	String[] distributedPath;
+	MappingMethod method;
 	int boxNum;
+	public Configure(){
+	}
 	public Configure(String path){
 		map = new HashMap<String,String>();
 		Reader reader = new Reader(path);
@@ -28,23 +34,32 @@ public class Configure {
 				String[] segs = line.split("\t");
 				map.put(segs[0], segs[1]);
 			}
-//			String[] segs = reader.getline().split("\t");
-//			map.put(segs[0], segs[1]);		
-			
-			//add over	
 		}
 	}
+	public MappingMethod getMethod() {
+		return method;
+	}
+	public void setMethod(MappingMethod method) {
+		this.method = method;
+	}
+	public void setCentralPath(String centralPath) {
+		this.centralPath = centralPath;
+	}
+	public void setDistributedPath(String[] distributedPath) {
+		this.distributedPath = distributedPath;
+		this.boxNum = this.distributedPath.length;
+	}
 	public MappingMethod getMappingMethod(){
-		//add start
-		
-//		String method = this.map.getOrDefault(CENTRAL, "DuplicateTwiceMapping");
-		String method = this.map.getOrDefault(MAP_METHOD, "DuplicateTwiceMapping");		
-		//over		
+
+		String method = this.map.getOrDefault(MAP_METHOD, "DuplicateTwiceMapping");			
 		
 		MappingMethod instance;
 		switch(method){
 		case "DuplicateTwiceMapping": instance = new DuplicateTwiceMapping();
 		break;
+		case "DuplicateMapping": instance = new DuplicateMapping();
+		break;
+
 		//add start
 		case "MergeSplitMapping" : 
 			instance = new MergeSplitMapping();
@@ -54,6 +69,14 @@ public class Configure {
 		default: instance = new DuplicateTwiceMapping();
 		}
 		return instance;
+	}
+	
+	public List<MappingMethod> getImplementedMethods(){
+		List<MappingMethod> list = new ArrayList<MappingMethod>();
+		list.add(new DuplicateTwiceMapping());
+		list.add(new DuplicateMapping());
+		list.add(new MergeSplitMapping());
+		return list;
 	}
 	
 	public String getCentralPath(){
