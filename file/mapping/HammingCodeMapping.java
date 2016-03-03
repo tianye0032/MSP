@@ -14,7 +14,7 @@ import java.util.List;
 import MSP.utils.FileUtils;
 
 public class HammingCodeMapping implements MappingMethod{
-	private static final String name  = "";
+	private static final String name  = "HammingCodeMapping";
 	@Override
 	public boolean isAuthentic(String[] target) {
 		// TODO Auto-generated method stub
@@ -51,8 +51,6 @@ public class HammingCodeMapping implements MappingMethod{
 			for (int i = 0; i < len; i++) {
 				out[i] = new DataOutputStream(new FileOutputStream(target[i]));
 			}
-//			byte c = in.readByte();	
-			
 			int cc = in.read();
 			
 			ArrayList<BitSet> listBit = new ArrayList<BitSet>();
@@ -71,7 +69,6 @@ public class HammingCodeMapping implements MappingMethod{
 					}
 					listBit.clear();
 				}
-//				c = in.readByte();
 				cc = in.read();
 			}
 			if (listBit.size() != 0) {    //add 1 and several 0 at the end of each target
@@ -96,10 +93,6 @@ public class HammingCodeMapping implements MappingMethod{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-
-		
 		
 		return false;
 	}
