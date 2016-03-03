@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.CharBuffer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,6 +61,17 @@ public class Reader {
 		}
 		return false;
 	}
+	public char[] getChars(){
+		CharBuffer buff = CharBuffer.allocate(10000); // Only process samll files right now!
+		int len=0;
+		try {
+			len = bf.read(buff);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return buff.array();		
+	}
 	public String getline(){
 		try {
 			return this.bf.readLine();
@@ -95,23 +107,9 @@ public class Reader {
 		Pattern p=Pattern.compile("\\(.*?\\)"); 
 		
 	        
-		Reader r = new Reader("data/key");		
-		while(r.ready()){
-			String line = r.getline();
-			if(line!=null && !line.isEmpty()){
-				Matcher m=p.matcher(line); 
-				
-				while(m.find()) {
-					 String seg = m.group();
-					 if(!seg.isEmpty()){
-						Double x = Double.parseDouble(seg.substring(1, seg.indexOf(",")));
-						System.out.print(x+" ");
-						Double y = Double.parseDouble(seg.substring(seg.indexOf(",")+2,seg.lastIndexOf("")-1));
-						System.out.println(y);
-					 }
-				 } 
-			} 
-		}
+		Reader r = new Reader("data/conf/center.conf");		
+		char[] content = r.getChars();
+		for(char ch : content)System.out.print(ch);
 	
 	}
 	
