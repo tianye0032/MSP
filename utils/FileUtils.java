@@ -42,16 +42,29 @@ public class FileUtils {
         }
     }
 	
-	public static void createFile(String dest)throws IOException {
+	public static void createFile(String dest) {
 		dest=dest.replace('\\', '/');
         File file=new File(dest);
         if(!file.exists()){
         	file.getParentFile().mkdirs();
 //        	file.mkdirs();
-        	if(file.isDirectory())file.mkdir();
-        	else if(file.isFile())	file.createNewFile();
+        	if(file.isDirectory()) {
+        		file.mkdir();
+        	} else if(file.isFile()) {
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+        	}
         }
     }
+	
+	public static void createFiles(String dest[]) {
+		for (int i = 0; i < dest.length; i++) {
+			createFile(dest[i]);
+		}
+	}
 	
 	public static void deleteFile(String dest)throws IOException {
 		dest=dest.replace('\\', '/');

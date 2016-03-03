@@ -7,7 +7,7 @@ import java.util.List;
 import MSP.file.mapping.DuplicateMapping;
 import MSP.file.mapping.DuplicateTwiceMapping;
 import MSP.file.mapping.MappingMethod;
-import MSP.file.mapping.MergeSplitMapping;
+import MSP.file.mapping.ByteMapping;
 import MSP.utils.Reader;
 
 public class Configure {
@@ -62,7 +62,7 @@ public class Configure {
 
 		//add start
 		case "MergeSplitMapping" : 
-			instance = new MergeSplitMapping();
+			instance = new ByteMapping();
 			break;
 		//over
 		

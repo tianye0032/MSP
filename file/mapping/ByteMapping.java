@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import MSP.utils.FileUtils;
 
-public class MergeSplitMapping implements MappingMethod {
+public class ByteMapping implements MappingMethod {
 
 	private final String name = "MergeSplitMapping";
 
