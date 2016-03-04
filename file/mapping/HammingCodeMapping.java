@@ -2,6 +2,7 @@ package MSP.file.mapping;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -17,19 +18,14 @@ public class HammingCodeMapping implements MappingMethod{
 	private boolean authentic = true;
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return name;
 	}
 	
 	@Override
-	public boolean isAuthentic(String[] target) {
-		// TODO Auto-generated method stub
-		
-		// For loop
-		// Read 1 bit from each distributed file
-		//  
-				// Wrtie each block into a distributed file
-		return false;
+	public boolean isAuthentic(String[] source) {
+		String tempTarget = new String("C:\\data\\test\\central\\temp");
+		merge(source, tempTarget);
+		return authentic;
 	}
 
 	@Override
@@ -45,8 +41,9 @@ public class HammingCodeMapping implements MappingMethod{
 				inList.add(new DataInputStream(new FileInputStream(source[i])));
 			}
 			ArrayList<BitSet> listBit = new ArrayList<BitSet>();
-			List<BitSet> temSets = new ArrayList<BitSet>();
-			while (inList.size() > 0) {			
+			ArrayList<Byte> lastVerifyBytes = new ArrayList<Byte>();
+			
+			while (inList.size() > 0) {
 				for (int j = 0; j < inList.size(); j++) {
 					byte[] byteSpace = new byte[1];
 					int c = inList.get(j).read(byteSpace);
@@ -64,20 +61,43 @@ public class HammingCodeMapping implements MappingMethod{
 				if (listBit == null || listBit.size() == 0) {
 					return true;
 				} 
-				temSets = files7ToHammingCode(listBit);
-				byte[] verifyRes = verifyHammingCode(temSets);
 				
-				for (int k = 0; k < verifyRes.length; k++) {
-					out.write(verifyRes[k]);
+				if (listBit.size() == 14) {
+					List<BitSet> tem = files7ToHammingCode(listBit.subList(0, 7)); 
+					byte[] verifyRes = verifyHammingCode(tem);
+					for (int k = 0; k < verifyRes.length; k++) {
+						out.write(verifyRes[k]);
+					}
+					for (int i = 0; i < 7; i++) {
+						listBit.remove(0);
+					}
 				}
-				listBit.clear();
+				
 			}
-			
+			if (listBit != null && listBit.size() != 0) {
+				List<BitSet> tem = files7ToHammingCode(listBit); 
+				byte[] lastResBytes = verifyHammingCode(tem);
+				for (int i = 0; i < lastResBytes.length; i++) {
+					lastVerifyBytes.add(lastResBytes[i]);
+				}
+				
+				//get rid of the additional bytes
+				int size = lastVerifyBytes.size();
+				for (int j = size - 1; j >= 0; j--) {
+					if (lastVerifyBytes.get(j) == 0) {
+						lastVerifyBytes.remove(j);
+					}
+				}
+				lastVerifyBytes.remove(lastVerifyBytes.size() - 1);
+				//write the last few bytes to file
+				for (int k = 0; k < lastVerifyBytes.size(); k++) {
+					out.write(lastVerifyBytes.get(k));
+				}
+			}		
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -172,7 +192,7 @@ public class HammingCodeMapping implements MappingMethod{
 	 * output: transfer to hamming code 
 	 * 
 	 */
-	private List<BitSet> files7ToHammingCode(ArrayList<BitSet> listBit) {
+	private List<BitSet> files7ToHammingCode(List<BitSet> listBit) {
 		if (listBit.size() != 7) {
 			System.out.println("the size of listBit is not 7");
 			return null;
@@ -216,7 +236,6 @@ public class HammingCodeMapping implements MappingMethod{
 			while (cc != -1) {
 				byte value = new Integer(cc).byteValue();
 				
-				
 				BitSet[] code = generateHammingCode(value);
 				for (int j = 0; j < code.length; j++) {
 					listBit.add(code[j]);
@@ -236,9 +255,9 @@ public class HammingCodeMapping implements MappingMethod{
 					out[k].write(new byte[]{byteRes[k]});
 				}
 			} else {         //add 10000000 at the end of each target file
-//				for (int k = 0; k < 7; k++) {
-//					out[k].write((byte)256);
-//				}
+				for (int k = 0; k < 7; k++) {
+					out[k].write(new byte[]{(byte)1});
+				}
 			}
 			in.close();
 			for (int i = 0; i < len; i++) {
@@ -258,7 +277,7 @@ public class HammingCodeMapping implements MappingMethod{
 	/*
 	 * transfer the 8 BitSet to 7 bytes, and attach ***100** at the end
 	 */
-	private byte[] bits8ToBytes(ArrayList<BitSet> listBit) {
+	public byte[] bits8ToBytes(ArrayList<BitSet> listBit) {
 		ArrayList<BitSet> temList = new ArrayList<BitSet>(listBit);
 		ArrayList<BitSet> resList = new ArrayList<BitSet>();
 		if (temList.size() < 8) {
@@ -351,11 +370,8 @@ public class HammingCodeMapping implements MappingMethod{
 			set2.set(4);
 		}		
 
-
-		
 		return new BitSet[]{set1, set2};
 	}
-	
 	
 	public static void main(String[] args){
 		
@@ -368,23 +384,6 @@ public class HammingCodeMapping implements MappingMethod{
 			
 			ham.merge(target, "data\\test\\central\\hh");
 			
-//			BitSet[] bits = ham.generateHammingCode((byte) 11);
-//			
-//			for (int i = 0; i < bits.length; i++) {
-//				byte[] bytes = bits[i].toByteArray();
-//				if (bytes == null || bytes.length == 0) {
-//					System.out.println(0);
-//				} else {
-//					System.out.println(bytes[0]);
-//				}				
-//			}
-			
-//			BitSet set = new BitSet();
-//			byte[] by = set.toByteArray();
-//			System.out.println(by.toString());
-		
 	}
-
-
 
 }
