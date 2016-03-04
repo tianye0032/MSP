@@ -111,7 +111,7 @@ public class CentralServer extends Thread{
 				
 				
 				if(config.isFromCentral(message)){
-					if ((!indexTree.isNewVersion(version)||(config.getType(message)!=JobType.UPDATE)))
+					if ((!indexTree.isNewVersion(version)||(config.getType(message)!=JobType.ADD)))
 {
 						System.out.println("Duplicate Message Ignored!   "+version.getFile()+version.getVersionId());
 						return;
