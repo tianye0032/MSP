@@ -2,7 +2,6 @@ package MSP.file.mapping;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -15,6 +14,13 @@ import MSP.utils.FileUtils;
 
 public class HammingCodeMapping implements MappingMethod{
 	private static final String name  = "HammingCodeMapping";
+	private boolean authentic = true;
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return name;
+	}
+	
 	@Override
 	public boolean isAuthentic(String[] target) {
 		// TODO Auto-generated method stub
@@ -28,8 +34,161 @@ public class HammingCodeMapping implements MappingMethod{
 
 	@Override
 	public boolean merge(String[] source, String target) {
-		// TODO Auto-generated method stub
-		return false;
+		FileUtils.createFiles(source);
+		FileUtils.createFile(target);
+		int len = source.length;
+		List<DataInputStream> inList = new ArrayList<DataInputStream>();
+		
+		try {
+			DataOutputStream out = new DataOutputStream(new FileOutputStream(target));
+			for (int i = 0; i < len; i++) {
+				inList.add(new DataInputStream(new FileInputStream(source[i])));
+			}
+			ArrayList<BitSet> listBit = new ArrayList<BitSet>();
+			List<BitSet> temSets = new ArrayList<BitSet>();
+			while (inList.size() > 0) {				
+				for (int j = 0; j < inList.size(); j++) {
+					byte[] byteSpace = new byte[1];
+					int c = inList.get(j).read(byteSpace);
+					if (c != -1) {
+						//
+						BitSet bits = BitSet.valueOf(byteSpace);
+						listBit.add(bits);							
+					} else {
+						inList.get(j).close();
+						inList.remove(j);						
+						j--;
+					}					
+				}				
+				//restore these bitsets to hamming code
+				if (listBit == null || listBit.size() == 0) {
+					return true;
+				} 
+				temSets = files7ToHammingCode(listBit);
+				byte[] verifyRes = verifyHammingCode(temSets);
+				
+				for (int k = 0; k < verifyRes.length; k++) {
+					out.write(verifyRes[k]);
+				}
+				listBit.clear();
+			}
+			
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		return true;
+	}
+
+	public byte[] verifyHammingCode(List<BitSet> temSets) {
+		if (temSets.size() % 2 != 0) {
+			return null;
+		}
+		byte[] res = new byte[4];
+		ArrayList<BitSet> bitList = new ArrayList<BitSet>();
+		for (int i = 0; i < temSets.size(); i++) {
+			BitSet tem4bit = correct74HammingCode(temSets.get(i));
+			bitList.add(tem4bit);
+		}		
+		//restore all these 4bits to real data bytes
+		for (int j = 0; j < bitList.size(); j += 2) {
+			BitSet set = new BitSet();
+			set.or(bitList.get(j));
+			for (int k = 0; k < 4; k++) {
+				if (bitList.get(j + 1).get(k)) {
+					set.set(4 + k);
+				}
+			}
+			BitSet revBit = reverseBitSet(set);
+			
+			
+			
+			byte[] temBytes = revBit.toByteArray();
+			
+			if (temBytes == null || temBytes.length == 0) {
+				res[j / 2] = (byte)0;
+			} else {
+				res[j / 2] = temBytes[0];
+			}			
+		}
+		return res;
+	}
+
+	private BitSet reverseBitSet(BitSet set) {
+		BitSet bset = new BitSet();
+		for (int i = 0; i <= 7; i++) {
+			if (set.get(i)) {
+				bset.set(7 - i);
+			}
+		}
+		
+		return bset;
+	}
+
+	public BitSet correct74HammingCode(BitSet bitSet) {
+		BitSet res = new BitSet();
+//		res.or(bitSet);
+		int xorData = 0;
+		if (bitSet.get(3)) {
+			xorData ^= 3;
+		}
+		for (int i = 5; i < 8; i++) {
+			if (bitSet.get(i)) {
+				xorData ^= i;
+			}
+		}
+		int parity = 0;
+		parity = parity | ((bitSet.get(4)) ? (1 << 2) : 0);
+		parity = parity | ((bitSet.get(2)) ? (1 << 1) : 0);
+		parity = parity | ((bitSet.get(1)) ? 1 : 0);
+		
+		int index = xorData ^ parity;
+		//correction
+		if (index != 0) {
+			bitSet.flip(index);
+			authentic = false;
+		}
+		//get the data code
+		if (bitSet.get(3)) {
+			res.set(0);
+		}
+		for (int i = 5; i <= 7; i++) {
+			if (bitSet.get(i)) {
+				res.set(i - 4);
+			}
+		}
+		
+		return res;
+	}
+
+	/*
+	 * input: 7 bitset from 7 files
+	 * output: transfer to hamming code 
+	 * 
+	 */
+	private List<BitSet> files7ToHammingCode(ArrayList<BitSet> listBit) {
+		if (listBit.size() != 7) {
+			System.out.println("the size of listBit is not 7");
+			return null;
+		}
+		List<BitSet> bits = new ArrayList<BitSet>();
+		for (int i = 0; i < 8; i++) {
+			BitSet set = new BitSet();
+			for (int j = 0; j < 7; j++) {
+				if (listBit.get(j).get(i)) {
+					set.set(j + 1);
+				}
+			}
+			bits.add(set);
+		}
+		
+		return bits;
 	}
 
 	/*
@@ -44,7 +203,7 @@ public class HammingCodeMapping implements MappingMethod{
 		FileUtils.createFile(source);
 		FileUtils.createFiles(target);		
 		int len = target.length;
-		DataOutputStream [] out = new DataOutputStream [len];		
+		DataOutputStream[] out = new DataOutputStream [len];		
 		try {
 			DataInputStream in = new DataInputStream(new FileInputStream(source));
 			
@@ -65,7 +224,7 @@ public class HammingCodeMapping implements MappingMethod{
 				if (listBit.size() == 8) {
 					byte[] byteRes = bits8ToBytes(listBit);
 					for (int k = 0; k < 7; k++) {
-						out[k].writeByte(byteRes[k]);
+						out[k].write(new byte[]{byteRes[k]});
 					}
 					listBit.clear();
 				}
@@ -74,14 +233,13 @@ public class HammingCodeMapping implements MappingMethod{
 			if (listBit.size() != 0) {    //add 1 and several 0 at the end of each target
 				byte[] byteRes = bits8ToBytes(listBit);
 				for (int k = 0; k < 7; k++) {
-					out[k].writeByte(byteRes[k]);
+					out[k].write(new byte[]{byteRes[k]});
 				}
 			} else {         //add 10000000 at the end of each target file
 				for (int k = 0; k < 7; k++) {
-					out[k].writeByte(256);
+					out[k].write((byte)256);
 				}
 			}
-
 			in.close();
 			for (int i = 0; i < len; i++) {
 				out[i].flush();
@@ -94,30 +252,18 @@ public class HammingCodeMapping implements MappingMethod{
 			e.printStackTrace();
 		}
 		
-		return false;
+		return true;
 	}
 	
 	/*
 	 * transfer the 8 BitSet to 7 bytes, and attach ***100** at the end
 	 */
 	private byte[] bits8ToBytes(ArrayList<BitSet> listBit) {
-		BitSet bitSet = new BitSet();
 		ArrayList<BitSet> temList = new ArrayList<BitSet>(listBit);
 		ArrayList<BitSet> resList = new ArrayList<BitSet>();
 		if (temList.size() < 8) {
 			BitSet bitTem = new BitSet(8);    //the initial size is still 64
-			bitTem.set(1, 8);
-			
-			
-			
-//			for (int i = 0; i < 8; i++) {
-//				if (bitTem.get(i)) {
-//					System.out.println("i = " + i + " | " + 1);
-//				} else {
-//					System.out.println("i = " + i + " | " + 0);
-//				}
-//			}
-						
+			bitTem.set(1, 8);			
 			temList.add(bitTem);
 			while (temList.size() < 8) {
 				bitTem = new BitSet(8);
@@ -146,7 +292,6 @@ public class HammingCodeMapping implements MappingMethod{
 			}
 		}
 		
-		
 		return byteRes;
 	}
 	
@@ -159,27 +304,18 @@ public class HammingCodeMapping implements MappingMethod{
 		int xor2 = 0;
 		//data code
 		for (int i = 0; i < 8; i++) {
-			if (((text >> i) & 1) == 1) {
-				if (i < 4) {
-					set1.set(count1);
-					count1++;
-					xor1 ^= (i + 1);
-				} else {
-					set2.set(count2);
-					count2++;
-					xor2 ^= (i + 1);
+			if (i < 4) {
+				if ((((text >> (7 - i)) & 1) == 1)) {
+					set1.set(count1);						
 				}
+				count1++;
+			} else {
+				if ((((text >> (7 - i)) & 1) == 1)) {
+					set2.set(count2);
+				}
+				count2++;				
 			}
 		}	
-		//parity code
-		for (int j = 0; j < 3; j++) {
-			if (((xor1 >> j) & 1) == 1) {
-				set1.set(j + 1);
-			}
-			if (((xor2 >> j) & 1) == 1) {
-				set2.set(j + 1);
-			}
-		}
 		if (set1.get(3) != set1.get(4)) {
 			set1.flip(3);
 			set1.flip(4);
@@ -189,27 +325,59 @@ public class HammingCodeMapping implements MappingMethod{
 			set2.flip(4);
 		}
 		
+		//xor
+		for (int i = 1; i < 8; i++) {
+			if (set1.get(i)) {
+				xor1 ^= i;
+			}
+			if (set2.get(i)) {
+				xor2 ^= i;
+			}
+		}
+		
+		//parity code
+		for (int j = 0; j < 2; j++) {
+			if (((xor1 >> j) & 1) == 1) {
+				set1.set(j + 1);
+			}
+			if (((xor2 >> j) & 1) == 1) {
+				set2.set( j+ 1);
+			}
+		}
+		if (((xor1 >> 2) & 1) == 1) {
+			set1.set(4);
+		}
+		if (((xor2 >> 2) & 1) == 1) {
+			set2.set(4);
+		}		
+
+
+		
 		return new BitSet[]{set1, set2};
 	}
 	
 	
 	public static void main(String[] args){
 		
-//			FileUtils.copyFile("data\\test\\central\\hh", "data\\test\\box1\\gg\\hh");
-//			String dir = "data/test/";
-//			File file=new File(dir);
-//			List<File> fileList=getFilesIn(file);
-//			for(File x:fileList)
-//			System.out.println(x.getPath());
-//			FileUtils.deleteFile("data\\test\\box1\\hh");
-			
-		
 			HammingCodeMapping ham = new HammingCodeMapping();
 			String[] target = new String[7];
 			for (int i = 0; i < 7; i++) {
 				target[i] = "data\\test\\box" + i + "\\hh";
 			}
-			ham.split("data\\test\\central\\hh", target);
+//			ham.split("data\\test\\central\\hh", target);
+			
+			ham.merge(target, "data\\test\\central\\hh");
+			
+//			BitSet[] bits = ham.generateHammingCode((byte) 11);
+//			
+//			for (int i = 0; i < bits.length; i++) {
+//				byte[] bytes = bits[i].toByteArray();
+//				if (bytes == null || bytes.length == 0) {
+//					System.out.println(0);
+//				} else {
+//					System.out.println(bytes[0]);
+//				}				
+//			}
 			
 //			BitSet set = new BitSet();
 //			byte[] by = set.toByteArray();
@@ -217,10 +385,6 @@ public class HammingCodeMapping implements MappingMethod{
 		
 	}
 
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return name;
-	}
+
 
 }
