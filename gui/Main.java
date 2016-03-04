@@ -80,4 +80,23 @@ public class Main extends Applet {
 //		confirm.addMouseListener(this);
 		this.repaint();
 	}
+public void drawHamming(){
+		
+		// a blank text field
+		center = new TextField("Center",30);
+		// blank field of 20 columns
+		ds1 = new TextField("1 Distributed:", 30);
+		// predefined text displayed
+		ds2 = new TextField("2 Distributed:!",30);
+		// predefined text in 30 columns
+		ds3 = new TextField("3 Distributed: !", 30);
+		this.add(center);
+		this.add(ds1);
+		this.add(ds2);
+		this.add(ds3);
+		
+		this.add(confirm);
+//		confirm.addMouseListener(this);
+		this.repaint();
+	}
 }
