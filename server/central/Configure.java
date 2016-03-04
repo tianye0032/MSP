@@ -6,6 +6,7 @@ import java.util.List;
 
 import MSP.file.mapping.DuplicateMapping;
 import MSP.file.mapping.DuplicateTwiceMapping;
+import MSP.file.mapping.HammingCodeMapping;
 import MSP.file.mapping.MappingMethod;
 import MSP.file.mapping.ByteMapping;
 import MSP.utils.Reader;
@@ -59,9 +60,10 @@ public class Configure {
 		break;
 		case "DuplicateMapping": instance = new DuplicateMapping();
 		break;
-
+		case "HammingCodeMapping": instance = new HammingCodeMapping();
+		break;
 		//add start
-		case "MergeSplitMapping" : 
+		case "ByteMapping" : 
 			instance = new ByteMapping();
 			break;
 		//over
