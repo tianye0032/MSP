@@ -46,7 +46,7 @@ public class HammingCodeMapping implements MappingMethod{
 			}
 			ArrayList<BitSet> listBit = new ArrayList<BitSet>();
 			List<BitSet> temSets = new ArrayList<BitSet>();
-			while (inList.size() > 0) {				
+			while (inList.size() > 0) {			
 				for (int j = 0; j < inList.size(); j++) {
 					byte[] byteSpace = new byte[1];
 					int c = inList.get(j).read(byteSpace);
@@ -236,9 +236,9 @@ public class HammingCodeMapping implements MappingMethod{
 					out[k].write(new byte[]{byteRes[k]});
 				}
 			} else {         //add 10000000 at the end of each target file
-				for (int k = 0; k < 7; k++) {
-					out[k].write((byte)256);
-				}
+//				for (int k = 0; k < 7; k++) {
+//					out[k].write((byte)256);
+//				}
 			}
 			in.close();
 			for (int i = 0; i < len; i++) {
@@ -364,7 +364,7 @@ public class HammingCodeMapping implements MappingMethod{
 			for (int i = 0; i < 7; i++) {
 				target[i] = "data\\test\\box" + i + "\\hh";
 			}
-//			ham.split("data\\test\\central\\hh", target);
+			ham.split("data\\test\\central\\hh", target);
 			
 			ham.merge(target, "data\\test\\central\\hh");
 			
