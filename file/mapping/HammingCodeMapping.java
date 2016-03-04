@@ -42,10 +42,17 @@ public class HammingCodeMapping implements MappingMethod{
 			}
 			ArrayList<BitSet> listBit = new ArrayList<BitSet>();
 			ArrayList<Byte> lastVerifyBytes = new ArrayList<Byte>();
-			
-			while (inList.size() > 0) {
+			boolean[] failFiles = new boolean[len];
+			int countFiles = len;
+//			while (inList.size() > 0) {
+			while (countFiles > 0) {	
 				for (int j = 0; j < inList.size(); j++) {
 					byte[] byteSpace = new byte[1];
+					if (failFiles[j]) {
+						BitSet zeroBits = new BitSet();
+						listBit.add(zeroBits);
+						continue;
+					}
 					int c = inList.get(j).read(byteSpace);
 					if (c != -1) {
 						//
@@ -53,15 +60,25 @@ public class HammingCodeMapping implements MappingMethod{
 						listBit.add(bits);							
 					} else {
 						inList.get(j).close();
-						inList.remove(j);						
-						j--;
+//						inList.remove(j);						
+//						j--;
+						BitSet zeroBits1 = new BitSet();
+						listBit.add(zeroBits1);
+						failFiles[j] = true;
+						countFiles--;
 					}					
 				}				
+
 				//restore these bitsets to hamming code
 				if (listBit == null || listBit.size() == 0) {
 					return true;
 				} 
 				
+				if (countFiles == 0) {
+					for (int i = 0; i < len; i++) {
+						listBit.remove(listBit.size() - 1);
+					}
+				}
 				if (listBit.size() == 14) {
 					List<BitSet> tem = files7ToHammingCode(listBit.subList(0, 7)); 
 					byte[] verifyRes = verifyHammingCode(tem);
@@ -74,6 +91,7 @@ public class HammingCodeMapping implements MappingMethod{
 				}
 				
 			}
+
 			if (listBit != null && listBit.size() != 0) {
 				List<BitSet> tem = files7ToHammingCode(listBit); 
 				byte[] lastResBytes = verifyHammingCode(tem);
@@ -93,8 +111,9 @@ public class HammingCodeMapping implements MappingMethod{
 				for (int k = 0; k < lastVerifyBytes.size(); k++) {
 					out.write(lastVerifyBytes.get(k));
 				}
-			}		
-			
+			}
+			out.flush();
+			out.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -380,7 +399,7 @@ public class HammingCodeMapping implements MappingMethod{
 			for (int i = 0; i < 7; i++) {
 				target[i] = "data\\test\\box" + i + "\\hh";
 			}
-			ham.split("data\\test\\central\\hh", target);
+//			ham.split("data\\test\\central\\hh", target);
 			
 			ham.merge(target, "data\\test\\central\\hh");
 			
