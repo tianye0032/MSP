@@ -111,7 +111,7 @@ public class CentralServer extends Thread{
 				
 				
 				if(config.isFromCentral(message)){
-					if ((!indexTree.isNewVersion(version)||(config.getType(message)!=JobType.ADD)))
+					if ((!indexTree.isNewVersion(version)||(config.getType(message)==JobType.DELETE)))
 {
 						System.out.println("Duplicate Message Ignored!   "+version.getFile()+version.getVersionId());
 						return;
@@ -146,8 +146,8 @@ public class CentralServer extends Thread{
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-				}else{
-					if ((!indexTree.isNewVersion(version)||(config.getType(message)!=JobType.ADD)))
+				}else{ // when the message comes from a local distributed box
+					if ((!indexTree.isNewVersion(version)||(config.getType(message)==JobType.DELETE)))
 					{
 						System.out.println("Duplicate Message Ignored!   "+version.getFile()+version.getVersionId());
 						return;				
