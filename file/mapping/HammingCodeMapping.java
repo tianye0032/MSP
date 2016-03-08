@@ -2,7 +2,6 @@ package MSP.file.mapping;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -399,7 +398,7 @@ public class HammingCodeMapping implements MappingMethod{
 			for (int i = 0; i < 7; i++) {
 				target[i] = "data\\test\\box" + i + "\\hh";
 			}
-//			ham.split("data\\test\\central\\hh", target);
+			ham.split("data\\test\\central\\hh", target);
 			
 			ham.merge(target, "data\\test\\central\\hh");
 			
