@@ -43,7 +43,6 @@ public class HammingCodeMapping implements MappingMethod{
 			ArrayList<Byte> lastVerifyBytes = new ArrayList<Byte>();
 			boolean[] failFiles = new boolean[len];
 			int countFiles = len;
-//			while (inList.size() > 0) {
 			while (countFiles > 0) {	
 				for (int j = 0; j < inList.size(); j++) {
 					byte[] byteSpace = new byte[1];
@@ -54,13 +53,15 @@ public class HammingCodeMapping implements MappingMethod{
 					}
 					int c = inList.get(j).read(byteSpace);
 					if (c != -1) {
-						//
+						//read a byte from a file in the dropbox, and store it in listBit.
 						BitSet bits = BitSet.valueOf(byteSpace);
 						listBit.add(bits);							
 					} else {
 						inList.get(j).close();
 //						inList.remove(j);						
 //						j--;
+						//if data missing in one file, then use 0 to fillup, 
+						//and correct it when doing the hamming check
 						BitSet zeroBits1 = new BitSet();
 						listBit.add(zeroBits1);
 						failFiles[j] = true;
@@ -98,13 +99,14 @@ public class HammingCodeMapping implements MappingMethod{
 					lastVerifyBytes.add(lastResBytes[i]);
 				}
 				
-				//get rid of the additional bytes
+				//get rid of the marked 0000... bytes at the end by spiting
 				int size = lastVerifyBytes.size();
 				for (int j = size - 1; j >= 0; j--) {
 					if (lastVerifyBytes.get(j) == 0) {
 						lastVerifyBytes.remove(j);
 					}
 				}
+				//get rid of 111111..., the same as above
 				lastVerifyBytes.remove(lastVerifyBytes.size() - 1);
 				//write the last few bytes to file
 				for (int k = 0; k < lastVerifyBytes.size(); k++) {
@@ -398,7 +400,7 @@ public class HammingCodeMapping implements MappingMethod{
 			for (int i = 0; i < 7; i++) {
 				target[i] = "data\\test\\box" + i + "\\hh";
 			}
-			ham.split("data\\test\\central\\hh", target);
+//			ham.split("data\\test\\central\\hh", target);
 			
 			ham.merge(target, "data\\test\\central\\hh");
 			
