@@ -114,7 +114,9 @@ public class Configure {
 		break;
 		case "DuplicateMapping": instance = new DuplicateMapping();
 		break;
-		case "HammingCodeMapping": instance = new HammingCodeMapping();
+		case "HammingCodeMapping": instance = new HammingCodeMapping();		
+		break;
+		case "ParityMapping": instance = new ParityMapping();		
 		break;
 		//add start
 		case "ByteMapping" : 
