@@ -10,6 +10,7 @@ import MSP.file.mapping.DuplicateTwiceMapping;
 import MSP.file.mapping.HammingCodeMapping;
 import MSP.file.mapping.MappingMethod;
 import MSP.file.mapping.ByteMapping;
+import MSP.file.mapping.ParityMapping;
 import MSP.utils.Reader;
 
 public class Configure {	
