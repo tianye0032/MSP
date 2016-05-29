@@ -3,6 +3,7 @@ package MSP.server.central;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import MSP.file.mapping.DuplicateMapping;
 import MSP.file.mapping.DuplicateTwiceMapping;
@@ -11,20 +12,39 @@ import MSP.file.mapping.MappingMethod;
 import MSP.file.mapping.ByteMapping;
 import MSP.utils.Reader;
 
-public class Configure {
-	
+public class Configure {	
 
 	final String CENTRAL = "CentralPath";
 	final String MAP_METHOD = "MappingMethod";
 	final String DISTRIBUTED = "DistributedPath";
+
+//add
+	public static final String NUM_DATASERVER = "numDataServers";
+	public static final String NUM_PARITYSERVER = "numParityServers";
+	public static final String COEFFICIENT = "coefficent";
+	public static final String EXTEND = "extend";
+	
+	public static int[][] coefficient;
+//add over
 	
 	private HashMap<String,String> map;
-	String centralPath;
-	String[] distributedPath;
-	MappingMethod method;
-	int boxNum;
+	
+	private String centralPath;
+	private String[] distributedPath;	
+	private MappingMethod method;
+	
+	private int boxNum;
+	
+//add	
+	public static Configure config = null;
+	static {
+		config = new Configure("data/conf/center.conf");
+	}	
+//add over
+	
 	public Configure(){
 	}
+	
 	public Configure(String path){
 		map = new HashMap<String,String>();
 		Reader reader = new Reader(path);
@@ -37,6 +57,39 @@ public class Configure {
 			}
 		}
 	}
+		
+//add	
+	public static String getValue(String key) {
+		return config.map.get(key);
+	}
+	
+	public static int getIntValue(String key) {
+		return Integer.valueOf(getValue(key));
+	}
+	 
+	public static double[][] getCoefficient() {		
+		int numRow = getIntValue(NUM_PARITYSERVER);
+		int numColumn = getIntValue(NUM_DATASERVER);
+		double[][] res = new double[numRow][numColumn];
+		
+		int row = 0;
+		for (Map.Entry<String, String> entry : config.map.entrySet()) {
+			String key = entry.getKey();
+			if (key.startsWith(COEFFICIENT)) {
+				String value = entry.getValue();
+				row = Integer.valueOf(key.substring(COEFFICIENT.length())) - 1;
+				String[] tem = value.split(",");
+				for (int i = 0; i < tem.length; i++) {
+					String para = tem[i].trim();					
+					res[row][i] = Double.valueOf(para);					
+				}
+//				row++;
+			}
+		}
+		return res;
+	}
+//add over
+
 	public MappingMethod getMethod() {
 		return method;
 	}
@@ -50,6 +103,7 @@ public class Configure {
 		this.distributedPath = distributedPath;
 		this.boxNum = this.distributedPath.length;
 	}
+	
 	public MappingMethod getMappingMethod(){
 
 		String method = this.map.getOrDefault(MAP_METHOD, "DuplicateTwiceMapping");			
