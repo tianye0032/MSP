@@ -28,6 +28,8 @@ public class ParityMapping implements MappingMethod {
 	public String getName() {
 		return name;
 	}
+	
+	
 
 	@Override
 	public boolean isAuthentic(String[] target) {
