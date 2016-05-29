@@ -259,6 +259,7 @@ public class ParityMapping implements MappingMethod {
 		for (int i = 0; i < 6; i++) {
 			target[i] = "data\\test\\box" + i + "\\hh";
 		}
+		
 //		par.split("data\\test\\central\\hh", target);
 //		
 		par.merge(target, "data\\test\\central\\hh");
