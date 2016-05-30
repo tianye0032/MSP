@@ -30,8 +30,9 @@ public class CentralServer extends Thread{
 	Pipe.SinkChannel[] psics;
 	Pipe.SourceChannel psoc;
 
-	public CentralServer(){		
-		this(new Configure("data/conf/center.conf"));		 
+	public CentralServer(){			
+		this(new Configure("data/conf/center.conf"));	
+		Configure.config = new Configure(Configure.CONFIGPATH);
 	}
 	public CentralServer(Configure config){
 		jobPool = new HashMap<String,InstantJob>();
