@@ -9,6 +9,7 @@ import MSP.file.mapping.DuplicateMapping;
 import MSP.file.mapping.DuplicateTwiceMapping;
 import MSP.file.mapping.HammingCodeMapping;
 import MSP.file.mapping.MappingMethod;
+import MSP.file.mapping.ParityMapping;
 import MSP.file.mapping.ByteMapping;
 import MSP.file.mapping.ParityMapping;
 import MSP.utils.Reader;
@@ -135,6 +136,8 @@ public class Configure {
 		list.add(new DuplicateTwiceMapping());
 		list.add(new DuplicateMapping());
 		list.add(new ByteMapping());
+		list.add(new HammingCodeMapping());
+		list.add(new ParityMapping());
 		return list;
 	}
 	
@@ -222,8 +225,8 @@ public class Configure {
 	}
 	public static void main(String[] args){
 		Configure config = new Configure("data/conf/center.conf");
-		String message = "ENTRY_MODIFY: C:\\Users\\tianye0032\\Dropbox\\workspace\\MSPproject\\data\\test\\box2\\hh";		
-		System.out.println(config.getRelativePath(message));
-		System.out.println(config.getCentralPath());
+//		String message = "ENTRY_MODIFY: C:\\Users\\tianye0032\\Dropbox\\workspace\\MSPproject\\data\\test\\box2\\hh";		
+//		System.out.println(config.getRelativePath(message));
+//		System.out.println(config.getCentralPath());
 	}
 }
