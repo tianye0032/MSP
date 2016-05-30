@@ -29,16 +29,14 @@ public class BasicMatrix {
 	public double[] divide(double[][] A, double[] B) {
 		Matrix matrixA = new Matrix(A);
 		Matrix matrixB = new Matrix(B, B.length);
-		
-//		for (int i = 0; i < A.length; i++) {
-//			for (int j = 0; j < A[0].length; j++) {
-//				System.out.print(A[i][j] + "  ");
-//			}
-//			System.out.println();
-//		}
-		
+	
+		System.out.println("det: " + matrixA.det());
 		if (A.length == A[0].length) {
-			if (matrixA.det() == 0) {
+			if (Math.abs(matrixA.det()) < 0.0000001) {				
+				
+				
+				System.out.println("not valid");			
+				
 				return null;
 			}
 		}
@@ -46,16 +44,13 @@ public class BasicMatrix {
 		Matrix C = matrixA.solve(matrixB);
 		double[] res = C.getColumnPackedCopy();
 		
-		for (int i = 0; i < res.length; i++) {
-			System.out.println(res[i]  + " | " + Math.round(res[i]));
-		}
-		System.out.println("-----------");
+//		for (int i = 0; i < res.length; i++) {
+//			System.out.println(res[i]  + " | " + Math.round(res[i]));
+//		}
+//		System.out.println("-----------");
 		
 		roundMatrix(res);
-		
-//		System.out.println(matrixA.det());
-		
-		
+	
 		return res;
 	}
 	

@@ -283,16 +283,16 @@ public class ParityMapping implements MappingMethod {
 	public static void main(String[] args){
 		
 		ParityMapping par = new ParityMapping();
-		String[] target = new String[6];
+		String[] target = new String[7];
 		double[][] coefficient = Configure.getCoefficient();
 		
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 7; i++) {
 			target[i] = "data\\test\\box" + i + "\\hh";
 		}
 		
-		par.split("data\\test\\central\\hh", target);
+//		par.split("data\\test\\central\\hh", target);
 //		
-//		par.merge(target, "data\\test\\central\\hh");
+		par.merge(target, "data\\test\\central\\hh");
 		
 //		byte[] lastBytes = new byte[]{new Integer(0x80).byteValue(), new Integer(0x00).byteValue()
 //				, new Integer(0x00).byteValue(), new Integer(0x00).byteValue()};
