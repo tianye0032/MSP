@@ -207,10 +207,9 @@ public class HammingCodeMapping implements MappingMethod{
 		return res;
 	}
 
-	/*
+	/**
 	 * input: 7 bitset from 7 files
-	 * output: transfer to hamming code 
-	 * 
+	 * output: transfer to hamming code  
 	 */
 	private List<BitSet> files7ToHammingCode(List<BitSet> listBit) {
 		if (listBit.size() != 7) {
@@ -231,7 +230,7 @@ public class HammingCodeMapping implements MappingMethod{
 		return bits;
 	}
 
-	/*
+	/**
 	 * 	Read in byte , transform to bits
 	 *  For loop
 	 *  Read 4 bits, generate hamming code;
@@ -294,7 +293,7 @@ public class HammingCodeMapping implements MappingMethod{
 		return true;
 	}
 	
-	/*
+	/**
 	 * transfer the 8 BitSet to 7 bytes, and attach ***100** at the end
 	 */
 	public byte[] bits8ToBytes(ArrayList<BitSet> listBit) {

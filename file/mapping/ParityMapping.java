@@ -37,6 +37,10 @@ public class ParityMapping implements MappingMethod {
 		return false;
 	}
 
+	/**
+	 * merge files from different data servers back to another local files, while authentication and
+	 * correction
+	 */
 	@Override
 	public boolean merge(String[] source, String target) {
 		init(target, source);
@@ -135,7 +139,10 @@ public class ParityMapping implements MappingMethod {
 		return res;
 	}
 
-
+	/**
+	 * split a local file into several files, upload to data servers, and also calculate the parity 
+	 * data, uploads to parity servers
+	 */
 	@Override
 	public boolean split(String source, String[] target) {
 		init(source, target);
@@ -200,6 +207,11 @@ public class ParityMapping implements MappingMethod {
 		return true;
 	}
 	
+	/**
+	 * initiation work: check whether the configure is appropriate
+	 * @param source
+	 * @param target
+	 */
 	private void init(String source, String[] target) {
 		FileUtils.createFile(source);
 		FileUtils.createFiles(target);		
@@ -210,7 +222,7 @@ public class ParityMapping implements MappingMethod {
 	}
 
 	/**
-	 * write the parity data to files
+	 * write the parity data to files, if the last row is incomplete, then stop generating parities
 	 * @param out
 	 * @param dataList
 	 */
@@ -232,6 +244,11 @@ public class ParityMapping implements MappingMethod {
 		}		
 	}
 	
+	/**
+	 * replenish **** ****, **10 0000, 0000 0000, 0000 0000 for one data
+	 * @param temBytes
+	 * @return
+	 */
 	private int lastInt(ArrayList<Byte> temBytes) {
 		int size = temBytes.size();
 		temBytes.add(new Integer(0x80).byteValue());
@@ -243,6 +260,12 @@ public class ParityMapping implements MappingMethod {
 		return temInt;
 	}
 	
+	/**
+	 * replenish 1000 0000, 0000 0000, 0000 0000, 0000 0000 at the end (except one is:
+	 * **** ****, **10 0000, 0000 0000, 0000 0000)
+	 * @param listInt
+	 * @param numDataSer
+	 */
 	private void replenishInt(ArrayList<Integer> listInt, int numDataSer) {
 		int tem = ((0x80 << 24) | ((0x00 & 0xff) << 16) |
 				  ((0x00 & 0xff) << 8) | (0x00));
@@ -262,9 +285,9 @@ public class ParityMapping implements MappingMethod {
 			target[i] = "data\\test\\box" + i + "\\hh";
 		}
 		
-//		par.split("data\\test\\central\\hh", target);
+		par.split("data\\test\\central\\hh", target);
 //		
-		par.merge(target, "data\\test\\central\\hh");
+//		par.merge(target, "data\\test\\central\\hh");
 		
 //		byte[] lastBytes = new byte[]{new Integer(0x80).byteValue(), new Integer(0x00).byteValue()
 //				, new Integer(0x00).byteValue(), new Integer(0x00).byteValue()};

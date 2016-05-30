@@ -59,6 +59,12 @@ public class BasicMatrix {
 		return res;
 	}
 	
+	public double detValue(double[][] A) {
+		Matrix matrixA = new Matrix(A);
+		return matrixA.det();
+	}
+	
+	
 	private void roundMatrix(double[][] A) {
 		int row = A.length;
 		int column = A[0].length;
