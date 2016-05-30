@@ -15,7 +15,7 @@ import MSP.file.mapping.ParityMapping;
 import MSP.utils.Reader;
 
 public class Configure {	
-
+	public static final String CONFIGPATH = "data/conf/center.conf";
 	final String CENTRAL = "CentralPath";
 	final String MAP_METHOD = "MappingMethod";
 	final String DISTRIBUTED = "DistributedPath";
@@ -39,9 +39,9 @@ public class Configure {
 	
 //add	
 	public static Configure config = null;
-	static {
-		config = new Configure("data/conf/center.conf");
-	}	
+//	static {
+//		config = new Configure(CONFIGPATH);
+//	}	
 //add over
 	
 	public Configure(){
@@ -121,7 +121,7 @@ public class Configure {
 		case "ParityMapping": instance = new ParityMapping();		
 		break;
 		//add start
-		case "ByteMapping" : 
+		case "MergeSplitMapping" : 
 			instance = new ByteMapping();
 			break;
 		//over
@@ -131,7 +131,7 @@ public class Configure {
 		return instance;
 	}
 	
-	public List<MappingMethod> getImplementedMethods(){
+	public static List<MappingMethod> getImplementedMethods(){
 		List<MappingMethod> list = new ArrayList<MappingMethod>();
 		list.add(new DuplicateTwiceMapping());
 		list.add(new DuplicateMapping());
@@ -223,6 +223,7 @@ public class Configure {
 			return JobType.DELETE;
 		}else return null;
 	}
+
 	public static void main(String[] args){
 		Configure config = new Configure("data/conf/center.conf");
 //		String message = "ENTRY_MODIFY: C:\\Users\\tianye0032\\Dropbox\\workspace\\MSPproject\\data\\test\\box2\\hh";		
