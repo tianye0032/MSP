@@ -113,7 +113,7 @@ public class CentralServer extends Thread{
 				
 				if(config.isFromCentral(message)){
 					if ((!indexTree.isNewVersion(version)||(config.getType(message)==JobType.DELETE)))
-{
+					{
 						System.out.println("Duplicate Message Ignored!   "+version.getFile()+version.getVersionId());
 						return;
 					}
@@ -141,12 +141,13 @@ public class CentralServer extends Thread{
 					splitJob.setType(config.getType(message));
 					splitJob.setFileToDelete(fileToDelete);
 					indexTree.addNewVersion(version);	
-					splitJob.start();
+//					splitJob.start();
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+					splitJob.start();
 				}else{ // when the message comes from a local distributed box
 					if ((!indexTree.isNewVersion(version)||(config.getType(message)==JobType.DELETE)))
 					{
@@ -156,7 +157,6 @@ public class CentralServer extends Thread{
 					int boxInd = config.fromWhichBox(message);
 					System.out.println("A message from Box : " + boxInd);
 					
-//					String fileInitName = config.getRelativePath(filename);
 					if (!jobPool.containsKey(filename)) {
 						InstantJob inst = new InstantJob();
 						inst.method = config.getMappingMethod();

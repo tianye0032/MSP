@@ -19,11 +19,7 @@ import MSP.utils.FileUtils;
 public class ParityMapping implements MappingMethod {
 	private static final String name  = "ParityMapping";
 	
-//	private int numDataSer;
-//	private int numParitySer;	
-//	
-//	private QPC qpc;
-//	
+
 	private int numDataSer = Configure.getIntValue(Configure.NUM_DATASERVER);
 	private int numParitySer = Configure.getIntValue(Configure.NUM_PARITYSERVER);	
 	
