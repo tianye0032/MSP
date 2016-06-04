@@ -109,14 +109,22 @@ public class CentralServer extends Thread{
 			}else{
 				String filename = this.config.getRelativePath(file.getAbsolutePath());
 				Version version = new Version(file.getPath(),config);
+				if (config.getType(message)==JobType.DELETE)
+					{
+						System.out.println("Delete Message Ignored!   "+version.getFile()+version.getVersionId());
+						return;
+					}
 				
-				
-				if(config.isFromCentral(message)){
-					if ((!indexTree.isNewVersion(version)||(config.getType(message)==JobType.DELETE)))
+				if (!indexTree.isNewVersion(version))
 					{
 						System.out.println("Duplicate Message Ignored!   "+version.getFile()+version.getVersionId());
 						return;
 					}
+				if(!FileUtils.isFileUnlocked(file)){
+					System.out.println("File is locked!   "+version.getFile()+version.getVersionId());
+					return;
+				}
+				if(config.isFromCentral(message)){					
 					InstantJob splitJob = new InstantJob();
 					splitJob.method=config.getMappingMethod();
 					splitJob.setCentral(config.getCentralPath() + filename);
@@ -149,11 +157,7 @@ public class CentralServer extends Thread{
 					}
 					splitJob.start();
 				}else{ // when the message comes from a local distributed box
-					if ((!indexTree.isNewVersion(version)||(config.getType(message)==JobType.DELETE)))
-					{
-						System.out.println("Duplicate Message Ignored!   "+version.getFile()+version.getVersionId());
-						return;				
-					} 
+					
 					int boxInd = config.fromWhichBox(message);
 					System.out.println("A message from Box : " + boxInd);
 					

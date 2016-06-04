@@ -102,6 +102,58 @@ public class WatchDir extends Thread{
         this.trace = true;
         this.psic=psic;
     }
+    
+    /**
+     * Process all events for keys queued to the watcher
+     */
+    public void displayEvents() {
+        for (;;) {
+
+            // wait for key to be signalled
+            WatchKey key;
+            try {
+                key = watcher.take();
+            } catch (InterruptedException x) {
+                return;
+            }
+
+            Path dir = keys.get(key);
+            if (dir == null) {
+                System.err.println("WatchKey not recognized!!");
+                continue;
+            }
+
+            for (WatchEvent<?> event: key.pollEvents()) {
+                WatchEvent.Kind kind = event.kind();
+
+                // TBD - provide example of how OVERFLOW event is handled
+                if (kind == OVERFLOW) {
+                    continue;
+                }
+
+                // Context for directory entry event is the file name of entry
+                WatchEvent<Path> ev = cast(event);
+                Path name = ev.context();
+                Path child = dir.resolve(name);
+
+                // print out event
+               // System.out.format("%s: %s\n", event.kind().name(), child);
+                String mess = String.format("%s: %s\n", event.kind().name(), child);
+                System.out.println(mess);
+            }
+
+            // reset key and remove from set if directory no longer accessible
+            boolean valid = key.reset();
+            if (!valid) {
+                keys.remove(key);
+
+                // all directories are inaccessible
+                if (keys.isEmpty()) {
+                    break;
+                }
+            }
+        }
+    }
 
     /**
      * Process all events for keys queued to the watcher
@@ -182,19 +234,21 @@ public class WatchDir extends Thread{
 
     public static void main(String[] args) throws IOException {
         // parse arguments
-        if (args.length == 0 || args.length > 2)
-            usage();
+//        if (args.length == 0 || args.length > 2)
+//            usage();
         boolean recursive = false;
-        int dirArg = 0;
-        if (args[0].equals("-r")) {
-            if (args.length < 2)
-                usage();
-            recursive = true;
-            dirArg++;
-        }
+//        int dirArg = 0;
+//        if (args[0].equals("-r")) {
+//            if (args.length < 2)
+//                usage();
+//            recursive = true;
+//            dirArg++;
+//        }
+        
 
         // register directory and process its events
-        Path dir = Paths.get(args[dirArg]);
-        new WatchDir(dir, recursive).processEvents();
+//        Path dir = Paths.get(args[dirArg]);
+        Path dir = Paths.get("data/test/");
+        new WatchDir(dir, recursive).displayEvents();
     }
 }
