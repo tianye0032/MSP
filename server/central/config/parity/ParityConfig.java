@@ -11,7 +11,7 @@ public class ParityConfig {
 		BasicMatrix basic = new BasicMatrix();
 		coeff = basic.mutiply(coeff, Configure.getIntValue(Configure.EXTEND));
 		double det = basic.detValue(coeff);
-		System.out.println(det);
+//		System.out.println(det);
 		if (basic.detValue(coeff) < precision) {
 			System.out.println("The det value of this set of coefficient is not appropriate.");
 			return false;

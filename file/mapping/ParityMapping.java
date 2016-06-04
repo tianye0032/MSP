@@ -158,7 +158,7 @@ public class ParityMapping implements MappingMethod {
 			int flag = 0;
 			List<Long> dataList = new ArrayList<Long>();
 			while (in.available() >= 4) {
-				System.out.println(in.available());
+//				System.out.println(in.available());
 				if (dataList.size() == numDataSer) {					
 					writeParities(out, dataList); 	//calculate the parity data
 					dataList = new ArrayList<Long>();
