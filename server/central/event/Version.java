@@ -69,7 +69,8 @@ public class Version {
 			int bytesRead = -1;
 			while ((bytesRead = inputStream.read(bytesBuffer)) != -1) {
 				digest.update(bytesBuffer, 0, bytesRead);
-			}			
+			}		
+			inputStream.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
@@ -79,6 +80,7 @@ public class Version {
 		}
 			byte[] hashedBytes = digest.digest();
 		
+			
 			return convertByteArrayToHexString(hashedBytes);
 		
 	}
