@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -190,26 +191,12 @@ public class FileUtils {
 		
 	}
 	public static boolean isFileUnlocked(File file) {
-		
-		FileChannel channel;
-		boolean ret = true;
-		try {
-			channel = new RandomAccessFile(file, "rw").getChannel();
-			FileLock lock = null;
-			try {
-			    lock = channel.tryLock();			    
-			} catch (OverlappingFileLockException e) {
-			    // File is open by someone else
-				ret=false;
-			} finally {
-			    lock.release();
-			    channel.close();
-			}
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		return ret;
+//		if(!file.exists())return true;
+//		String sameName = file.getAbsolutePath();
+//		return file.renameTo(new File(sameName));
+		return true;
+		   
+		 
     }
 	
 	
@@ -217,14 +204,20 @@ public class FileUtils {
 	public static void main(String[] args){
 		try {
 //			FileUtils.copyFile("data\\test\\central\\hh", "data\\test\\box1\\gg\\hh");
-			String dir = "data/test/hh";
+			String dir = "data/test/movie.mp4";
 			File file=new File(dir);
 //			List<File> fileList=getFilesIn(file);
 //			for(File x:fileList)
 //			System.out.println(x.getPath());
 //			FileUtils.deleteFile("data\\test\\box1\\hh");
-			System.out.println(FileUtils.isFileUnlocked(file));
-			System.out.println(file.exists());
+			while(true){
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				System.out.println(FileUtils.isFileUnlocked(file));
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

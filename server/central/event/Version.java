@@ -77,9 +77,8 @@ public class Version {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-			byte[] hashedBytes = digest.digest();
-		
-			return convertByteArrayToHexString(hashedBytes);
+		byte[] hashedBytes = digest.digest();		
+		return convertByteArrayToHexString(hashedBytes);
 		
 	}
 	

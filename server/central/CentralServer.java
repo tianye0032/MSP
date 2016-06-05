@@ -6,23 +6,23 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Pipe;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.List;
+import java.util.Hashtable;
 import java.util.Map;
 
-import MSP.server.central.event.IndexTree;
-import MSP.server.central.event.Version;
 import MSP.server.watcher.WatchDir;
 import MSP.utils.FileUtils;
 import MSP.utils.StringUtils;
 
 public class CentralServer extends Thread{
 	Configure config;
-	Map<String,InstantJob> jobPool;
-	IndexTree indexTree;
+	
+	Hashtable<String,String> messagePool; // The arrived message list
+	
+	MainWorker worker;
 //	private InstantJob mergeJob;
-	private ArrayList<String> pool = new ArrayList<String>();
+	
 	
 	private StringBuffer buffer;
 	// The variables below should be re-organized
@@ -35,9 +35,10 @@ public class CentralServer extends Thread{
 		Configure.config = new Configure(Configure.CONFIGPATH);
 	}
 	public CentralServer(Configure config){
-		jobPool = new HashMap<String,InstantJob>();
+		
+		messagePool = new Hashtable<String,String>();
 		this.config = config;
-		indexTree = new IndexTree();
+		worker = new MainWorker(messagePool,config);
 		try {
 			pipe = Pipe.open();
 		} catch (IOException e) {
@@ -106,92 +107,8 @@ public class CentralServer extends Thread{
 		for(File file:FileUtils.getFilesIn(filePath)){
 			if(file.isDirectory()){
 				//If the change is a directory change, then do nothing
-			}else{
-				String filename = this.config.getRelativePath(file.getAbsolutePath());
-				Version version = new Version(file.getPath(),config);
-				if (config.getType(message)==JobType.DELETE)
-					{
-						System.out.println("Delete Message Ignored!   "+version.getFile()+version.getVersionId());
-						return;
-					}
-				
-				if (!indexTree.isNewVersion(version))
-					{
-						System.out.println("Duplicate Message Ignored!   "+version.getFile()+version.getVersionId());
-						return;
-					}
-				if(!FileUtils.isFileUnlocked(file)){
-					System.out.println("File is locked!   "+version.getFile()+version.getVersionId());
-					return;
-				}
-				if(config.isFromCentral(message)){					
-					InstantJob splitJob = new InstantJob();
-					splitJob.method=config.getMappingMethod();
-					splitJob.setCentral(config.getCentralPath() + filename);
-					String[] disPath = new String[config.getDistributedPath().length];
-					
-					String lastVersion = indexTree.getLastVersion(version.getFile());
-					String[] fileToDelete = null;
-					if(!lastVersion.isEmpty()){
-						fileToDelete = new String[config.getDistributedPath().length];
-						for(int i = 0; i < fileToDelete.length; i++) {						
-							fileToDelete[i] = config.getDistributedPath()[i] + filename + "_" + lastVersion;				
-						}
-					}
-					for(int i = 0; i < disPath.length; i++) {		
-						disPath[i] = config.getDistributedPath()[i] + filename + "_" + version.getVersionId();	
-					}
-
-					
-					splitJob.setDistributed(disPath);
-					splitJob.setFromCentral(true);
-//					splitJob.setType(JobType.UPDATE);
-					splitJob.setType(config.getType(message));
-					splitJob.setFileToDelete(fileToDelete);
-					indexTree.addNewVersion(version);	
-//					splitJob.start();
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					splitJob.start();
-				}else{ // when the message comes from a local distributed box
-					
-					int boxInd = config.fromWhichBox(message);
-					System.out.println("A message from Box : " + boxInd);
-					
-					if (!jobPool.containsKey(filename)) {
-						InstantJob inst = new InstantJob();
-						inst.method = config.getMappingMethod();
-						inst.setCentral(config.getCentralPath() + version.getFile());
-						inst.setDistributed(new String[config.getBoxNum()]);
-						inst.count++;
-						inst.getDistributed()[boxInd-1] = config.getDistributedPath()[boxInd-1]+filename;
-						inst.setType(config.getType(message));
-						jobPool.put(filename, inst);
-					} else {
-						InstantJob mergeInst = jobPool.get(filename);
-						if(mergeInst.getDistributed()[boxInd-1]!=null)return;
-						
-						mergeInst.getDistributed()[boxInd-1] = filePath;
-						mergeInst.count++;	
-						if(mergeInst.isFinished()){	
-							indexTree.addNewVersion(version);	//Add this version to the IndexTree			
-							
-							mergeInst.start();
-							jobPool.remove(filename);
-							pool.clear();
-							try {
-								Thread.sleep(2000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-					}
-					
-					
-				}
+			}else{				
+				this.messagePool.put(file.getAbsolutePath(), message);				
 			}
 			
 		}
@@ -201,6 +118,7 @@ public class CentralServer extends Thread{
 		
 	}
     public void run() {
+    	worker.start();
     	work();
     }
 	public void work(){
@@ -210,14 +128,14 @@ public class CentralServer extends Thread{
 			    	this.processMessage(message);	   	
 
 		    	}catch(Exception e){
-		    		System.out.println("Error In Main Method!     "+e.getMessage());
+		    		System.out.println("Error In Central Server!     "+e.getMessage());
 		    	}
 		    }
 	}
 	
 	public static void main(String[] args)throws IOException{
 		CentralServer server = new CentralServer();
-		server.work();
+		server.start();
 	        
 	}
 	
