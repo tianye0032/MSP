@@ -191,10 +191,10 @@ public class FileUtils {
 		
 	}
 	public static boolean isFileUnlocked(File file) {
-//		if(!file.exists())return true;
-//		String sameName = file.getAbsolutePath();
-//		return file.renameTo(new File(sameName));
-		return true;
+		if(!file.exists())return true;
+		String sameName = file.getAbsolutePath();
+		return file.renameTo(new File(sameName));
+//		return true;
 		   
 		 
     }
