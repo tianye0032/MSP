@@ -196,7 +196,7 @@ public class ParityMapping implements MappingMethod {
 			writeParities(out, dataList);
 			
 			in.close();
-			for (int i = 0; i < numDataSer; i++) {
+			for (int i = 0; i < len; i++) {
 				out[i].flush();
 				out[i].close();
 			}
