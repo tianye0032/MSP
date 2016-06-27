@@ -13,10 +13,6 @@ public class InstantJob extends Thread{
 	private String[] distributed;
 	private boolean fromCentral;
 	private String[] fileToDelete;
-	public void setFileToDelete(String[] fileToDelete) {
-		this.fileToDelete = fileToDelete;
-	}
-
 	public MappingMethod method;
 	
 	public int count =0;// Simply count the message for this file
@@ -32,10 +28,34 @@ public class InstantJob extends Thread{
 		//add end
 	}
 
+	public void run()
+	/**
+	 * Run the instant job
+	 */
+	{
+		System.out.println("An instant job starts");
+		if(this.getType()==JobType.ADD||this.getType()==JobType.UPDATE){
+			if(this.fromCentral){
+				method.split(central, distributed);
+			}else{
+				method.merge(distributed, central);
+			}
+		}else if(this.getType()==JobType.DELETE){
+			
+		}
+		if(this.fileToDelete!=null)
+			for(String file: this.fileToDelete){
+//				try {
+					FileUtils.deleteFile(file);
+//				} catch (IOException e) {
+//					System.out.println("Error While Deleting A File:   "+e.getMessage());
+//				}
+			}
+	}
+	
 	public JobType getType() {
 		return type;
 	}
-
 	public void setType(JobType type) {
 		this.type = type;
 	}
@@ -66,35 +86,12 @@ public class InstantJob extends Thread{
 	public boolean isFromCentral() {
 		return fromCentral;
 	}
+	public void setFileToDelete(String[] fileToDelete) {
+		this.fileToDelete = fileToDelete;
+	}
 
 	public void setFromCentral(boolean fromCentral) {
 		this.fromCentral = fromCentral;
-	}
-
-	public void run()
-	/**
-	 * Run the instant job
-	 */
-	{
-		System.out.println("An instant job starts");
-		if(this.getType()==JobType.ADD||this.getType()==JobType.UPDATE){
-			if(this.fromCentral){
-				method.split(central, distributed);
-			}else{
-				method.merge(distributed, central);
-			}
-		}else if(this.getType()==JobType.DELETE){
-			
-		}
-		if(this.fileToDelete!=null)
-			for(String file: this.fileToDelete){
-//				try {
-					FileUtils.deleteFile(file);
-//				} catch (IOException e) {
-					// TODO Auto-generated catch block
-//					System.out.println("Error While Deleting A File:   "+e.getMessage());
-//				}
-			}
 	}
 }
 

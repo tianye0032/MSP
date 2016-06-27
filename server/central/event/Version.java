@@ -15,6 +15,8 @@ import java.util.Date;
 import MSP.server.central.Configure;
 
 public class Version {	
+	private static final int versionLen = 32;
+	
 	private String file;
 	
 	private String versionId;
@@ -23,6 +25,19 @@ public class Version {
 		super();
 	}
 	
+//	public Version(String file, boolean isId) {
+//		if (isVersionFile(file)) {
+//			int index = file.lastIndexOf("_");
+//			this.file = file.substring(0, index);
+//			this.versionId = file.substring(index + 1);
+//		} else {
+//			this.file = file;
+//			if (isId) {
+//				this.versionId = generaterVersion(file); 
+//			}
+//		}		
+//	}
+	
 	public Version(String file, String versionId) {
 		this.file = correctFormat(file);    // data/test/box1/a  0f719c0a5106ec4fd26879ad9d621edd
 		this.versionId = versionId;
@@ -30,7 +45,8 @@ public class Version {
 	
 	public Version(String path,Configure config) {
 		int index = path.lastIndexOf("_");
-		if (index > 0) {
+//		if (index > 0) {
+		if (isVersionFile(path)) {
 			this.file = path.substring(0, index);
 			this.file = config.getRelativePath(file);
 			this.versionId = path.substring(index + 1);
@@ -40,13 +56,31 @@ public class Version {
 		}		
 	}
 	
-	public String correctFormat(String filename) {
+	public boolean isVersionFile(String filename) {
 		int index = filename.lastIndexOf("_");
-		if (index > 0) {
-			return filename.substring(0, index);
-		} else {
-			return filename;
+		String id = null;
+		if (index >= 0 && index < filename.length() - 1) {
+			id = filename.substring(index + 1);
 		}		
+		if (id == null) {
+			return false;
+		} else if (id.length() == versionLen) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public String cutId(String filename) {
+		int index = filename.lastIndexOf("_");
+		return filename.substring(0, index);
+	}
+	
+	public String correctFormat(String filename) {
+		if (!isVersionFile(filename)) {
+			return filename;
+		}
+		return cutId(filename);
 	}
 		
 	public String generaterVersion(String path) {

@@ -6,10 +6,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Pipe;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import MSP.server.watcher.WatchDir;
 import MSP.utils.FileUtils;
@@ -18,7 +16,9 @@ import MSP.utils.StringUtils;
 public class CentralServer extends Thread{
 	Configure config;
 	
-	Hashtable<String,String> messagePool; // The arrived message list
+	//revised
+//	Hashtable<String,String> messagePool; // The arrived message list
+	private ConcurrentHashMap<String, String> messagePool;
 	
 	MainWorker worker;
 //	private InstantJob mergeJob;
@@ -36,7 +36,10 @@ public class CentralServer extends Thread{
 	}
 	public CentralServer(Configure config){
 		
-		messagePool = new Hashtable<String,String>();
+//		messagePool = new Hashtable<String,String>();
+		messagePool = new ConcurrentHashMap<String,String>();
+		
+		
 		this.config = config;
 		worker = new MainWorker(messagePool,config);
 		try {
@@ -136,7 +139,8 @@ public class CentralServer extends Thread{
 			    	this.processMessage(message);	   	
 
 		    	}catch(Exception e){
-		    		System.out.println("Error In Central Server!     "+e.getMessage());
+//		    		System.out.println("Error In Central Server!     "+e.getMessage());
+		    		e.printStackTrace();
 		    	}
 		    }
 	}

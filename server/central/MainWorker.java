@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import MSP.server.central.event.IndexTree;
 import MSP.server.central.event.Version;
@@ -16,9 +16,11 @@ import MSP.utils.FileUtils;
 public class MainWorker extends Thread{
 	Configure config;
 	Map<String,InstantJob> jobPool;
-	Hashtable<String,String> messagePool;
+//	Hashtable<String,String> messagePool;
+	ConcurrentHashMap<String,String> messagePool;
 	IndexTree indexTree;
-	public MainWorker(Hashtable<String,String> messagePool,Configure config){
+//	public MainWorker(Hashtable<String,String> messagePool,Configure config){
+	public MainWorker(ConcurrentHashMap<String,String> messagePool,Configure config){
 		jobPool = new HashMap<String,InstantJob>();
 		this.messagePool = messagePool;
 		this.config = config;
@@ -31,30 +33,13 @@ public class MainWorker extends Thread{
 	 */
 		System.out.println("Message Being Procceed : "+ message);
 	    //Leave recursion to the end! Now focus on single file!
-		//add start	
 		String filePath = config.getPath(message);
 		
 		//add about folder
 		if (config.getType(message) == JobType.DELETE) {
-			//If the change is a directory change, then do nothing
-			System.out.println("******MainWorker, filePath: " + filePath);
-			String filename = this.config.getRelativePath(filePath);
-			System.out.println("******MainWorker, filename: " + filename);
-			
-			FolderJob deleteJob = new FolderJob();				
-			deleteJob.setCentDistri(config.getCentralPath(), config.getDistributedPath(), filename);
-			if (config.isFromCentral(message)) {
-				deleteJob.setFromCentral(true);
-			} else {
-				deleteJob.setFromCentral(false);
-			}
-			deleteJob.setType(JobType.DELETE);
-			deleteJob.start();
-			
+			deleteAll(message);
 		}
 		//add over
-		
-		
 		
 		for(File file:FileUtils.getFilesIn(filePath)){   //it is not suitable for "DELETE", since the folder is gone. It return null
 			String filename = this.config.getRelativePath(file.getAbsolutePath());
@@ -105,7 +90,6 @@ public class MainWorker extends Thread{
 						disPath[i] = config.getDistributedPath()[i] + filename + "_" + version.getVersionId();	
 					}
 
-					
 					splitJob.setDistributed(disPath);
 					splitJob.setFromCentral(true);
 //					splitJob.setType(JobType.UPDATE);
@@ -158,6 +142,27 @@ public class MainWorker extends Thread{
 		}
 	
 	}
+	/**
+	 * delete file or folder
+	 * @param message
+	 */
+	private void deleteAll(String message) {
+		String filePath = config.getPath(message);
+//		System.out.println("******MainWorker, filePath: " + filePath);
+		String filename = this.config.getRelativePath(filePath);
+//		System.out.println("******MainWorker, filename: " + filename);
+		
+		FolderJob deleteJob = new FolderJob();				
+		deleteJob.setCentDistri(config.getCentralPath(), config.getDistributedPath(), filename);
+		if (config.isFromCentral(message)) {
+			deleteJob.setFromCentral(true);
+		} else {
+			deleteJob.setFromCentral(false);
+		}
+		deleteJob.setType(JobType.DELETE);
+		deleteJob.start();
+	}
+	
 	public void run() {
     	work();
     }
@@ -167,6 +172,11 @@ public class MainWorker extends Thread{
 		    		Thread.sleep(1000);
 		    		System.out.println(this.messagePool.size()+" messages in the list.");
 		    		Set<String> toDelete = new HashSet<String>();
+		    		//revised start
+		    		
+		    		
+		    		//revised over
+		    		
 		    		for(Entry<String,String> entry:this.messagePool.entrySet()){
 		    			File file = new File(entry.getKey());
 		    			if(FileUtils.isFileUnlocked(file)){
@@ -183,7 +193,8 @@ public class MainWorker extends Thread{
 		    			messagePool.remove(file);
 
 		    	}catch(Exception e){
-		    		System.out.println("Error In Main Worker!     " + e.getMessage());
+//		    		System.out.println("Error In Main Worker!     " + e.getMessage());
+		    		e.printStackTrace();
 		    	}
 		    }
 	}

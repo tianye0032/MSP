@@ -19,116 +19,117 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtils {
-	public static void copyFile(String src,String dest) throws IOException {
-//		src="data\\test\\central\\hh";
-//		dest="data\\test\\box1\\hh";
-		src=src.replace('\\', '/');
-		dest=dest.replace('\\', '/');
-        FileInputStream in=new FileInputStream(src);
-        File file=new File(dest);
-        if(!file.exists()){
-        	createFile(file);
-        }
-            
-        FileOutputStream out=new FileOutputStream(file);
-        int c;
-        byte buffer[]=new byte[1024];
-        while((c=in.read(buffer))!=-1){
-            for(int i=0;i<c;i++)
-                out.write(buffer[i]);        
-        }
-        in.close();
-        out.close();
-    }
-	public static void createFile(File file)throws IOException {
-        if(!file.exists()){
-        	file.getParentFile().mkdirs();
-//        	file.mkdirs();
-        	file.createNewFile();
-        }
-    }
-	
+
+	public static void copyFile(String src, String dest) throws IOException {
+		// src="data\\test\\central\\hh";
+		// dest="data\\test\\box1\\hh";
+		src = src.replace('\\', '/');
+		dest = dest.replace('\\', '/');
+		FileInputStream in = new FileInputStream(src);
+		File file = new File(dest);
+		if (!file.exists()) {
+			createFile(file);
+		}
+
+		FileOutputStream out = new FileOutputStream(file);
+		int c;
+		byte buffer[] = new byte[1024];
+		while ((c = in.read(buffer)) != -1) {
+			for (int i = 0; i < c; i++)
+				out.write(buffer[i]);
+		}
+		in.close();
+		out.close();
+	}
+
+	public static void createFile(File file) throws IOException {
+		if (!file.exists()) {
+			file.getParentFile().mkdirs();
+			// file.mkdirs();
+			file.createNewFile();
+		}
+	}
+
 	public static void createFile(String dest) {
-		dest=dest.replace('\\', '/');
-        File file=new File(dest);
-        if(!file.exists()){
-        	file.getParentFile().mkdirs();
-//        	file.mkdirs();
-        	if(file.isDirectory()) {
-        		file.mkdir();
-        	} else if(file.isFile()) {
+		dest = dest.replace('\\', '/');
+		File file = new File(dest);
+		if (!file.exists()) {
+			file.getParentFile().mkdirs();
+			// file.mkdirs();
+			if (file.isDirectory()) {
+				file.mkdir();
+			} else if (file.isFile()) {
 				try {
 					file.createNewFile();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-        	}
-        }
-    }
-	
+			}
+		}
+	}
+
 	public static void createFiles(String dest[]) {
 		for (int i = 0; i < dest.length; i++) {
 			createFile(dest[i]);
 		}
 	}
-	
+
 	public static void deleteFile(String dest) {
-		dest=dest.replace('\\', '/');
-        File file=new File(dest);
-        if(file.exists()){
-        	file.delete();
-        }
-    }
-	
+		dest = dest.replace('\\', '/');
+		File file = new File(dest);
+		if (file.exists()) {
+			file.delete();
+		}
+	}
+
 	public static void deleteFiles(String[] dest) {
 		for (int i = 0; i < dest.length; i++) {
 			deleteFile(dest[i]);
 		}
 	}
-	
-	public static void deleteVersionFiles(String[] dest, int versionLen) {
-		for (int i = 0; i < dest.length; i++) {
-			dest[i] = dest[i].replace('\\', '/');
-			int lastSlash = dest[i].lastIndexOf("/");					
-			String folder = dest[i].substring(0, lastSlash);
-			String filename = dest[i].substring(lastSlash + 1);
-			String[] list = new File(folder).list();
-			for (int j = 0; j < list.length; j++) {
-				File file = new File(list)
+
+	public static boolean deleteDir(File dir) {
+		if (dir.isDirectory()) {
+			String[] children = dir.list();
+			for (int i = 0; i < children.length; i++) {
+				boolean success = deleteDir(new File(dir, children[i]));
+				if (!success) {
+					return false;
+				}
 			}
-			
 		}
-		
+		return dir.delete();
 	}
-	
-	
-	
-	public static void copyFile(File src,File dest) throws IOException {
-		copyFile(src.getAbsolutePath(),dest.getAbsolutePath());
+
+	public static void copyFile(File src, File dest) throws IOException {
+		copyFile(src.getAbsolutePath(), dest.getAbsolutePath());
 	}
-	public static void getFilesIn(File dir,List<File> list) throws IOException {
-		if(dir.exists()){
+
+	public static void getFilesIn(File dir, List<File> list) throws IOException {
+		if (dir.exists()) {
 			list.add(dir);
-			if(dir.isDirectory())
-				for(File file:dir.listFiles())
-				{
-					getFilesIn(file,list);					
+			if (dir.isDirectory())
+				for (File file : dir.listFiles()) {
+					getFilesIn(file, list);
 				}
 		}
 	}
+
 	public static List<File> getFilesIn(File dir) throws IOException {
 		List<File> list = new ArrayList<File>();
-		getFilesIn(dir,list);
+		getFilesIn(dir, list);
 		return list;
 	}
+
 	public static List<File> getFilesIn(String dest) throws IOException {
-		dest=dest.replace('\\', '/');
-        File file=new File(dest);
+		dest = dest.replace('\\', '/');
+		File file = new File(dest);
 		return getFilesIn(file);
 	}
-	
+
 	/**
 	 * ByteMapping: split a file into several files, reading by byte
+	 * 
 	 * @param src
 	 * @param dests
 	 * @throws IOException
@@ -140,7 +141,7 @@ public class FileUtils {
 			dests[i] = dests[i].replace('\\', '/');
 			createFile(dests[i]);
 		}
-		
+
 		int len = dests.length;
 		BufferedWriter[] out = new BufferedWriter[len];
 		try {
@@ -160,17 +161,18 @@ public class FileUtils {
 				out[i].flush();
 				out[i].close();
 			}
-			
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	/**
 	 * merge files back to one file, reading by byte
+	 * 
 	 * @param dests
 	 * @param src
 	 * @throws IOException
@@ -182,7 +184,7 @@ public class FileUtils {
 			dests[i] = dests[i].replace('\\', '/');
 			createFile(dests[i]);
 		}
-		
+
 		int len = dests.length;
 		List<BufferedReader> inList = new ArrayList<BufferedReader>();
 		try {
@@ -194,16 +196,15 @@ public class FileUtils {
 				for (int j = 0; j < inList.size(); j++) {
 					int c = inList.get(j).read();
 					if (c != -1) {
-						out.write(c);					
+						out.write(c);
 					} else {
 						inList.get(j).close();
 						inList.remove(j);
-						
+
 						j--;
 					}
 				}
 			}
-			
 
 			out.flush();
 			out.close();
@@ -212,29 +213,30 @@ public class FileUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
+
 	public static boolean isFileUnlocked(File file) {
-		if(!file.exists())return true;
+		if (!file.exists())
+			return true;
 		String sameName = file.getAbsolutePath();
 		return file.renameTo(new File(sameName));
-//		return true;
-		   
-		 
-    }
-	
-	
+		// return true;
 
-	public static void main(String[] args){
+	}
+
+	public static void main(String[] args) {
 		try {
-//			FileUtils.copyFile("data\\test\\central\\hh", "data\\test\\box1\\gg\\hh");
+			// FileUtils.copyFile("data\\test\\central\\hh",
+			// "data\\test\\box1\\gg\\hh");
 			String dir = "data/test/movie.mp4";
-			File file=new File(dir);
-//			List<File> fileList=getFilesIn(file);
-//			for(File x:fileList)
-//			System.out.println(x.getPath());
-//			FileUtils.deleteFile("data\\test\\box1\\hh");
-			while(true){
+			File file = new File(dir);
+			// List<File> fileList=getFilesIn(file);
+			// for(File x:fileList)
+			// System.out.println(x.getPath());
+			// FileUtils.deleteFile("data\\test\\box1\\hh");
+			 FileUtils.deleteDir(new File("C:\\Users\\Zhenbi Hu\\Dropbox\\workspace\\Data\\CyBox1\\cy"));
+			while (true) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
