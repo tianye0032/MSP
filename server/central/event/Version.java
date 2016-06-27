@@ -24,7 +24,7 @@ public class Version {
 	}
 	
 	public Version(String file, String versionId) {
-		this.file = correctFormat(file);    //data/test/box1/a  0f719c0a5106ec4fd26879ad9d621edd
+		this.file = correctFormat(file);    // data/test/box1/a  0f719c0a5106ec4fd26879ad9d621edd
 		this.versionId = versionId;
 	}
 	

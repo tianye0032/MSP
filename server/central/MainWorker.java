@@ -31,18 +31,50 @@ public class MainWorker extends Thread{
 	 */
 		System.out.println("Message Being Procceed : "+ message);
 	    //Leave recursion to the end! Now focus on single file!
-//		String filename = this.config.getRelativePath(message);
-//		if (filename == null) {
-//			return;
-//		}		
 		//add start	
 		String filePath = config.getPath(message);
-//		List<File> list = FileUtils.getFilesIn(filePath);
-		for(File file:FileUtils.getFilesIn(filePath)){
+		
+		//add about folder
+		if (config.getType(message) == JobType.DELETE) {
+			//If the change is a directory change, then do nothing
+			System.out.println("******MainWorker, filePath: " + filePath);
+			String filename = this.config.getRelativePath(filePath);
+			System.out.println("******MainWorker, filename: " + filename);
+			
+			FolderJob deleteJob = new FolderJob();				
+			deleteJob.setCentDistri(config.getCentralPath(), config.getDistributedPath(), filename);
+			if (config.isFromCentral(message)) {
+				deleteJob.setFromCentral(true);
+			} else {
+				deleteJob.setFromCentral(false);
+			}
+			deleteJob.setType(JobType.DELETE);
+			deleteJob.start();
+			
+		}
+		//add over
+		
+		
+		
+		for(File file:FileUtils.getFilesIn(filePath)){   //it is not suitable for "DELETE", since the folder is gone. It return null
+			String filename = this.config.getRelativePath(file.getAbsolutePath());
 			if(file.isDirectory()){
-				//If the change is a directory change, then do nothing
-			}else{
-				String filename = this.config.getRelativePath(file.getAbsolutePath());
+				//If the change is a directory change, then do nothing		
+				//add about folder
+				if (config.getType(message) == JobType.ADD) {
+					FolderJob addJob = new FolderJob();
+					addJob.setCentDistri(config.getCentralPath(), config.getDistributedPath(), filename);
+					if (config.isFromCentral(message)) {
+						addJob.setFromCentral(true);
+					} else {
+						addJob.setFromCentral(false);
+					}
+					addJob.setType(JobType.ADD);
+					addJob.start();
+				}
+				
+				//add over				
+			} else {				
 				Version version = new Version(file.getPath(),config);
 				if (config.getType(message)==JobType.DELETE)
 					{
@@ -119,17 +151,12 @@ public class MainWorker extends Thread{
 								e.printStackTrace();
 							}
 						}
-					}
-					
-					
+					}	
+				
 				}
-			}
-			
+			}			
 		}
-		
-
 	
-		
 	}
 	public void run() {
     	work();

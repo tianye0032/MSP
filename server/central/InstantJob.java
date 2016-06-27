@@ -88,12 +88,12 @@ public class InstantJob extends Thread{
 		}
 		if(this.fileToDelete!=null)
 			for(String file: this.fileToDelete){
-				try {
+//				try {
 					FileUtils.deleteFile(file);
-				} catch (IOException e) {
+//				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					System.out.println("Error While Deleting A File:   "+e.getMessage());
-				}
+//					System.out.println("Error While Deleting A File:   "+e.getMessage());
+//				}
 			}
 	}
 }

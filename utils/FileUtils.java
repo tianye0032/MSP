@@ -72,13 +72,37 @@ public class FileUtils {
 		}
 	}
 	
-	public static void deleteFile(String dest)throws IOException {
+	public static void deleteFile(String dest) {
 		dest=dest.replace('\\', '/');
         File file=new File(dest);
         if(file.exists()){
         	file.delete();
         }
     }
+	
+	public static void deleteFiles(String[] dest) {
+		for (int i = 0; i < dest.length; i++) {
+			deleteFile(dest[i]);
+		}
+	}
+	
+	public static void deleteVersionFiles(String[] dest, int versionLen) {
+		for (int i = 0; i < dest.length; i++) {
+			dest[i] = dest[i].replace('\\', '/');
+			int lastSlash = dest[i].lastIndexOf("/");					
+			String folder = dest[i].substring(0, lastSlash);
+			String filename = dest[i].substring(lastSlash + 1);
+			String[] list = new File(folder).list();
+			for (int j = 0; j < list.length; j++) {
+				File file = new File(list)
+			}
+			
+		}
+		
+	}
+	
+	
+	
 	public static void copyFile(File src,File dest) throws IOException {
 		copyFile(src.getAbsolutePath(),dest.getAbsolutePath());
 	}

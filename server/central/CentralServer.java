@@ -103,17 +103,25 @@ public class CentralServer extends Thread{
 		
 		//add start	
 		String filePath = config.getPath(message);
-//		List<File> list = FileUtils.getFilesIn(filePath);
+		
 		for(File file:FileUtils.getFilesIn(filePath)){
+			
 			if(file.isDirectory()){
 				//If the change is a directory change, then do nothing
+				//add about folder
+				this.messagePool.put(file.getAbsolutePath(), message);
 			}else{				
 				this.messagePool.put(file.getAbsolutePath(), message);				
-			}
-			
+			}			
 		}
 		
-
+		//add about folder
+		if (config.getType(message) == JobType.DELETE) {
+			
+//			System.out.println("***" + filePath);
+//			System.out.println("****" + new File(filePath).getAbsolutePath());
+			this.messagePool.put(new File(filePath).getAbsolutePath(), message);
+		}
 	
 		
 	}
