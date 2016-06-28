@@ -106,27 +106,25 @@ public class CentralServer extends Thread{
 		
 		//add start	
 		String filePath = config.getPath(message);
-		
-		for(File file:FileUtils.getFilesIn(filePath)){
-			
-			if(file.isDirectory()){
-				//If the change is a directory change, then do nothing
-				//add about folder
-				this.messagePool.put(file.getAbsolutePath(), message);
-			}else{				
-				this.messagePool.put(file.getAbsolutePath(), message);				
-			}			
-		}
-		
-		//add about folder
-		if (config.getType(message) == JobType.DELETE) {
-			
-//			System.out.println("***" + filePath);
-//			System.out.println("****" + new File(filePath).getAbsolutePath());
-			this.messagePool.put(new File(filePath).getAbsolutePath(), message);
-		}
-	
-		
+		this.messagePool.put(new File(filePath).getAbsolutePath(), message);
+//		for(File file:FileUtils.getFilesIn(filePath)){
+//			
+//			if(file.isDirectory()){
+//				//If the change is a directory change, then do nothing
+//				//add about folder
+//				this.messagePool.put(file.getAbsolutePath(), message);
+//			}else{				
+//				this.messagePool.put(file.getAbsolutePath(), message);				
+//			}			
+//		}
+//		
+//		//add about folder
+//		if (config.getType(message) == JobType.DELETE) {
+//			
+////			System.out.println("***" + filePath);
+////			System.out.println("****" + new File(filePath).getAbsolutePath());
+//			this.messagePool.put(new File(filePath).getAbsolutePath(), message);
+//		}		
 	}
     public void run() {
     	worker.start();
