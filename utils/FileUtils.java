@@ -88,6 +88,11 @@ public class FileUtils {
 		}
 	}
 
+	/**
+	 * delete a folder including all the files or folders in it
+	 * @param dir
+	 * @return
+	 */
 	public static boolean deleteDir(File dir) {
 		if (dir.isDirectory()) {
 			String[] children = dir.list();
@@ -128,8 +133,7 @@ public class FileUtils {
 	}
 
 	/**
-	 * ByteMapping: split a file into several files, reading by byte
-	 * 
+	 * ByteMapping: split a file into several files, reading by byte 
 	 * @param src
 	 * @param dests
 	 * @throws IOException
@@ -171,8 +175,7 @@ public class FileUtils {
 	}
 
 	/**
-	 * merge files back to one file, reading by byte
-	 * 
+	 * merge files back to one file, reading by byte 
 	 * @param dests
 	 * @param src
 	 * @throws IOException
