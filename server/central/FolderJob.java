@@ -71,7 +71,10 @@ public class FolderJob extends Thread{
 
 	public void deleteVersionFiles(String[] dest) {
 		for (int i = 0; i < dest.length; i++) {
-			deleteVersionFile(dest[i]);			
+			File file = new File(dest[i]);
+			if (file.exists()) {
+				deleteVersionFile(dest[i]);			
+			}			
 		}		
 	}
 	public void deleteVersionFile(String dest) {
@@ -144,6 +147,17 @@ public class FolderJob extends Thread{
 	}
 	public void setFromCentral(boolean fromCentral) {
 		this.fromCentral = fromCentral;
+	}
+	
+	
+	
+	public static void main(String[] args) {
+		File file = new File("data\\test\\box1\\aa\\box2\\hh");
+		if (file.exists()) {
+			System.out.println("yes");
+		} else {
+			System.out.println("no");
+		}
 	}
 
 }

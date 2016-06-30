@@ -121,7 +121,10 @@ public class MainWorker extends Thread{
 						InstantJob mergeInst = jobPool.get(filename);
 						if(mergeInst.getDistributed()[boxInd-1]!=null)return;
 						
-						mergeInst.getDistributed()[boxInd-1] = filePath;
+//						mergeInst.getDistributed()[boxInd-1] = filePath;
+						
+						mergeInst.getDistributed()[boxInd-1] = config.getDistributedPath()[boxInd-1] + filename;;
+						
 						mergeInst.count++;	
 						if(mergeInst.isFinished()){	
 							indexTree.addNewVersion(version);	//Add this version to the IndexTree			
