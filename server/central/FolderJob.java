@@ -72,20 +72,30 @@ public class FolderJob extends Thread{
 	public void deleteVersionFiles(String[] dest) {
 		for (int i = 0; i < dest.length; i++) {
 			File file = new File(dest[i]);
-			if (file.exists()) {
-				deleteVersionFile(dest[i]);			
-			}			
+//			if (file.exists()) {
+//				deleteVersionFile(dest[i]);			
+//			} 
+			deleteVersionFile(dest[i]);	
 		}		
 	}
+	
 	public void deleteVersionFile(String dest) {
 		dest = dest.replace('\\', '/');
 		int lastSlash = dest.lastIndexOf("/");					
 		String folder = dest.substring(0, lastSlash);
 		String filename = dest.substring(lastSlash + 1);
+		File fo = new File(folder);
+		if (!fo.exists()) {
+			return;
+		}
 		
 		String[] list = new File(folder).list();
 		for (int j = 0; j < list.length; j++) {			
 			File file = new File(folder + "/" + list[j]);
+			if (!file.exists()) {
+				return;
+			}			
+			
 			if (list[j].equals(filename)) {
 //				file.delete();
 				FileUtils.deleteDir(file);
