@@ -80,12 +80,12 @@ public class MainWorker extends Thread{
 					
 					String lastVersion = indexTree.getLastVersion(version.getFile());
 					String[] fileToDelete = null;
-					if(!lastVersion.isEmpty()){
-						fileToDelete = new String[config.getDistributedPath().length];
-						for(int i = 0; i < fileToDelete.length; i++) {						
-							fileToDelete[i] = config.getDistributedPath()[i] + filename + "_" + lastVersion;				
-						}
-					}
+//					if(!lastVersion.isEmpty()){
+//						fileToDelete = new String[config.getDistributedPath().length];
+//						for(int i = 0; i < fileToDelete.length; i++) {						
+//							fileToDelete[i] = config.getDistributedPath()[i] + filename + "_" + lastVersion;				
+//						}
+//					}
 					for(int i = 0; i < disPath.length; i++) {		
 						disPath[i] = config.getDistributedPath()[i] + filename + "_" + version.getVersionId();	
 					}
