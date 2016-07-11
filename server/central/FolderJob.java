@@ -34,15 +34,24 @@ public class FolderJob extends Thread{
 		dest = dest.replace('\\', '/');
 		int lastSlash = dest.lastIndexOf("/");					
 		String folder = dest.substring(0, lastSlash);
-		String filename = dest.substring(lastSlash + 1);
-		Version ver = new Version();
-		filename = ver.correctFormat(filename);
+		String oldfilename = dest.substring(lastSlash + 1);
 		
-		File file = new File(folder + "/" + filename);
+		Version ver = new Version();
+		String newfilename = ver.correctFormat(oldfilename);  //get rid of id from oldfile		
+		
+		File file = new File(folder + "/" + newfilename);
 		
 //		System.out.println("@@@delete from central: " + file.getAbsolutePath());
 		if (file.exists()) {
-			file.delete();
+			if (file.isFile()) {
+				String newId = createId(folder + "/" + newfilename);
+				String oldId = cutOutId(oldfilename);
+				if (newId.equals(oldId)) {
+					file.delete();
+				}
+			} else {
+				file.delete();
+			}	
 		}
 		
 //		String[] list = new File(folder).list();
@@ -67,6 +76,14 @@ public class FolderJob extends Thread{
 			return filename;
 		}
 		
+	}
+	private String cutOutId(String filename) {
+		int index = filename.lastIndexOf("_");
+		if (index > 0) {
+			return filename.substring(index + 1);
+		} else {
+			return filename;
+		}
 	}
 
 	public void deleteVersionFiles(String[] dest) {
@@ -108,6 +125,12 @@ public class FolderJob extends Thread{
 		}
 	}	
 	
+	public String createId(String file) {
+		Version ver = new Version();
+		String newId = ver.generaterVersion(file);
+		return newId;
+	}
+
 	public boolean isVersionFile(String filename) {
 		int index = filename.lastIndexOf("_");
 		String id = null;

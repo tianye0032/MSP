@@ -25,19 +25,6 @@ public class Version {
 		super();
 	}
 	
-//	public Version(String file, boolean isId) {
-//		if (isVersionFile(file)) {
-//			int index = file.lastIndexOf("_");
-//			this.file = file.substring(0, index);
-//			this.versionId = file.substring(index + 1);
-//		} else {
-//			this.file = file;
-//			if (isId) {
-//				this.versionId = generaterVersion(file); 
-//			}
-//		}		
-//	}
-	
 	public Version(String file, String versionId) {
 		this.file = correctFormat(file);    // data/test/box1/a  0f719c0a5106ec4fd26879ad9d621edd
 		this.versionId = versionId;
@@ -54,6 +41,15 @@ public class Version {
 			this.file = config.getRelativePath(path);
 			this.versionId = generaterVersion(path); 
 		}		
+	}
+	
+	public boolean isRightVersion(String file, String id) {
+		String exactId = generaterVersion(file);
+		if (exactId.equals(id)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public boolean isVersionFile(String filename) {
