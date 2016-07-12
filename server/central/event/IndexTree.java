@@ -19,8 +19,8 @@ public class IndexTree {
 
 		if(map.containsKey(version.getFile())){
 			List<String> history = map.get(version.getFile());
-//			for(int i= history.size()-1;i>=0;i--)
-			int i= history.size()-1;
+			for(int i= history.size()-1;i>=0;i--)
+//			int i= history.size()-1;
 			{
 				if(history.get(i).equals(version.getVersionId()))return false;
 			}			
@@ -35,10 +35,11 @@ public class IndexTree {
 		return "";
 	}
 	public void addNewVersion(Version version) {
-		if(map.containsKey(version.getFile())){
-			List<String> history = map.get(version.getFile());
-			history.add(version.getVersionId());
-		}else{
+//		if(map.containsKey(version.getFile())){
+//			List<String> history = map.get(version.getFile());
+//			history.add(version.getVersionId());
+//		}else
+		{
 			List<String> history = new ArrayList<String>();
 			history.add(version.getVersionId());
 			map.put(version.getFile(), history);
