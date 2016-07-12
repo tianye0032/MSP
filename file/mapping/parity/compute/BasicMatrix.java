@@ -30,7 +30,7 @@ public class BasicMatrix {
 		Matrix matrixA = new Matrix(A);
 		Matrix matrixB = new Matrix(B, B.length);
 	
-		System.out.println("det: " + matrixA.det());
+//		System.out.println("det: " + matrixA.det());
 		if (A.length == A[0].length) {
 			if (Math.abs(matrixA.det()) < 0.0000001) {				
 				
