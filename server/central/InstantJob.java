@@ -13,20 +13,32 @@ public class InstantJob extends Thread{
 	private String[] distributed;
 	private boolean fromCentral;
 	private String[] fileToDelete;
+	private long timestampStart;
 	public MappingMethod method;
+
 	
-	public int count =0;// Simply count the message for this file
+	public int count;// Simply count the message for this file
+	
+	public InstantJob(){
+		this.count=0;
+		this.timestampStart=System.currentTimeMillis();
+	}
+	
+	public boolean isWaitingTooLong(){
+		int threshold = 5000;
+		return System.currentTimeMillis()-this.timestampStart>threshold;
+	}
 	public boolean isReady(){
 		if(fromCentral){
 			return count>0;
-		}else return count>distributed.length;
+		}else return count>= distributed.length;
 	}
-	public boolean isFinished(){
-//		return count == method.getBoxNum() + 1;
-		//add start
-		return count >= distributed.length;
-		//add end
-	}
+//	public boolean isFinished(){
+////		return count == method.getBoxNum() + 1;
+//		//add start
+//		return count >= distributed.length;
+//		//add end
+//	}
 
 	public void run()
 	/**

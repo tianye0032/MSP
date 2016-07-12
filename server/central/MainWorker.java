@@ -126,7 +126,7 @@ public class MainWorker extends Thread{
 						mergeInst.getDistributed()[boxInd-1] = config.getDistributedPath()[boxInd-1] + filename;;
 						
 						mergeInst.count++;	
-						if(mergeInst.isFinished()){	
+						if(mergeInst.isReady()){	
 							indexTree.addNewVersion(version);	//Add this version to the IndexTree			
 							
 							mergeInst.start();
@@ -186,7 +186,7 @@ public class MainWorker extends Thread{
 		    				String message = entry.getValue();
 //		    				this.messagePool.remove(entry.getKey());
 		    				toDelete.add(entry.getKey());
-		    				System.out.println(message + " would be removed!");
+		    				System.out.println("Message <"+message + "> would be removed!");
 		    				this.processMessage(message);		    				
 		    			}else{
 		    				System.out.println(file.getAbsolutePath()+" is being used!");

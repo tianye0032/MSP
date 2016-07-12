@@ -19,7 +19,9 @@ public class IndexTree {
 
 		if(map.containsKey(version.getFile())){
 			List<String> history = map.get(version.getFile());
-			for(int i= history.size()-1;i>=0;i--){
+//			for(int i= history.size()-1;i>=0;i--)
+			int i= history.size()-1;
+			{
 				if(history.get(i).equals(version.getVersionId()))return false;
 			}			
 		}
