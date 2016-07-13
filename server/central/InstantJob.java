@@ -57,7 +57,7 @@ public class InstantJob extends Thread{
 		}
 		if(this.fileToDelete!=null)
 			for(String file: this.fileToDelete){
-//				FileUtils.deleteFile(file);
+				FileUtils.deleteFile(file);
 			}
 	}
 	
