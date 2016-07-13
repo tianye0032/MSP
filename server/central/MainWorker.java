@@ -173,7 +173,7 @@ public class MainWorker extends Thread{
 		 while(true){
 		    	try{		    		
 		    		Thread.sleep(1000);
-		    		System.out.println(this.messagePool.size()+" messages in the list.");
+		    		System.out.println(this.messagePool.size()+" messages; "+this.jobPool.size()+" jobs in the pool.");
 		    		Set<String> toDelete = new HashSet<String>();
 		    		//revised start
 		    		
