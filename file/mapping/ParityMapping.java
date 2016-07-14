@@ -172,18 +172,21 @@ public class ParityMapping implements MappingMethod {
 				flag++;
 			}
 			
-			if (in.available() > 0) {
+			if (flag != numDataSer || in.available() > 0) {
 				ArrayList<Integer> listInt = new ArrayList<Integer>();
-				ArrayList<Byte> temBytes = new ArrayList<Byte>();
-				int ccc = in.read();
-				while (ccc != -1) {
-					temBytes.add(new Integer(ccc).byteValue());
-					ccc = in.read();
+				if (in.available() > 0) {					
+					ArrayList<Byte> temBytes = new ArrayList<Byte>();
+					int ccc = in.read();
+					while (ccc != -1) {
+						temBytes.add(new Integer(ccc).byteValue());
+						ccc = in.read();
+					}
+					int last = lastInt(temBytes);
+					listInt.add(last);
+					replenishInt(listInt, numDataSer - 1);
+				} else {
+					replenishInt(listInt, numDataSer);
 				}
-				int last = lastInt(temBytes);
-				listInt.add(last);
-				replenishInt(listInt, numDataSer - 1);
-				
 				for (int k = 0; k < listInt.size(); k++) {
 					flag %= numDataSer;
 					out[flag].writeInt(listInt.get(k));
@@ -192,7 +195,8 @@ public class ParityMapping implements MappingMethod {
 					
 					flag++;
 				}	
-			}			
+			}	
+		
 			writeParities(out, dataList);
 			
 			in.close();
@@ -286,7 +290,7 @@ public class ParityMapping implements MappingMethod {
 			target[i] = "data\\test\\box" + i + "\\hh";
 		}
 		
-//		par.split("data\\test\\central\\hh", target);
+		par.split("data\\test\\central\\hh", target);
 //		
 		par.merge(target, "data\\test\\central\\hh");
 		
