@@ -33,6 +33,9 @@ public class InstantJob extends Thread{
 			return count>0;
 		}else return count>= distributed.length;
 	}
+	public void updateTime(){
+		this.timestampStart = System.currentTimeMillis();
+	}
 //	public boolean isFinished(){
 ////		return count == method.getBoxNum() + 1;
 //		//add start

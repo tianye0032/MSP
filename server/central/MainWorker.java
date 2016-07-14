@@ -119,6 +119,7 @@ public class MainWorker extends Thread{
 						jobPool.put(filename, inst);
 					} else {
 						InstantJob mergeInst = jobPool.get(filename);
+						mergeInst.updateTime();
 						if(mergeInst.getDistributed()[boxInd-1]!=null)return;
 						
 //						mergeInst.getDistributed()[boxInd-1] = filePath;
@@ -175,10 +176,7 @@ public class MainWorker extends Thread{
 		    		Thread.sleep(1000);
 		    		System.out.println(this.messagePool.size()+" messages; "+this.jobPool.size()+" jobs in the pool.");
 		    		Set<String> toDelete = new HashSet<String>();
-		    		//revised start
 		    		
-		    		
-		    		//revised over
 		    		
 		    		for(Entry<String,String> entry:this.messagePool.entrySet()){
 		    			File file = new File(entry.getKey());
@@ -194,7 +192,29 @@ public class MainWorker extends Thread{
 		    		}
 		    		for(String file:toDelete)
 		    			messagePool.remove(file);
+		    		
+		    		for(Entry<String,InstantJob> entry:this.jobPool.entrySet()){
+		    			String filename = entry.getKey();
+		    			InstantJob mergeInst = entry.getValue();
+		    			if((!mergeInst.isFromCentral())&&mergeInst.isWaitingTooLong()){
+		    				for(int boxInd = 0;boxInd<config.getBoxNum();boxInd++){
+		    					mergeInst.getDistributed()[boxInd] = config.getDistributedPath()[boxInd] + filename;;
+							}
+							if(mergeInst.isReady()){	
+								Version version = new Version(filename,config);
+								indexTree.addNewVersion(version);	//Add this version to the IndexTree			
+								
+								mergeInst.start();
+								jobPool.remove(filename);
 
+								try {
+									Thread.sleep(2000);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+		    			}
+		    		}
 		    	}catch(Exception e){
 //		    		System.out.println("Error In Main Worker!     " + e.getMessage());
 		    		e.printStackTrace();
