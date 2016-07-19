@@ -204,8 +204,10 @@ public class Configure {
 		String pattern = null;
 		if(ind == 0){
 			pattern = this.getCentralPath();
-		}else {
+		}else if(ind>0) {
 			pattern = this.getDistributedPath()[ind - 1];
+		}else {
+			return file;
 		}
 //		String path = this.getPath(message);	
 		if (file.indexOf(pattern) == -1) {
