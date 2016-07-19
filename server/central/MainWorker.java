@@ -201,7 +201,7 @@ public class MainWorker extends Thread{
 		    				for(int boxInd = 0;boxInd<config.getBoxNum();boxInd++){
 		    					if(mergeInst.getDistributed()[boxInd]==null)
 		    						{
-		    							mergeInst.getDistributed()[boxInd] = "data/temp/"+boxInd + filename;
+		    							mergeInst.getDistributed()[boxInd] = "data/temp/"+boxInd+"/" + filename;
 		    						}
 							}
 		    				Version version = new Version(filename,config);
