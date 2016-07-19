@@ -197,21 +197,20 @@ public class MainWorker extends Thread{
 		    			String filename = entry.getKey();
 		    			InstantJob mergeInst = entry.getValue();
 		    			if((!mergeInst.isFromCentral())&&mergeInst.isWaitingTooLong()){
+		    				System.out.println("A merge job starts after waiting too long : "+ filename);
 		    				for(int boxInd = 0;boxInd<config.getBoxNum();boxInd++){
 		    					mergeInst.getDistributed()[boxInd] = config.getDistributedPath()[boxInd] + filename;;
 							}
-							if(mergeInst.isReady()){	
-								Version version = new Version(filename,config);
-								indexTree.addNewVersion(version);	//Add this version to the IndexTree			
-								
-								mergeInst.start();
-								jobPool.remove(filename);
+		    				Version version = new Version(filename,config);
+							indexTree.addNewVersion(version);	//Add this version to the IndexTree			
+							
+							mergeInst.start();
+							jobPool.remove(filename);
 
-								try {
-									Thread.sleep(2000);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}
+							try {
+								Thread.sleep(2000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
 							}
 		    			}
 		    		}
