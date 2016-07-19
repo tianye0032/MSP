@@ -199,7 +199,10 @@ public class MainWorker extends Thread{
 		    			if((!mergeInst.isFromCentral())&&mergeInst.isWaitingTooLong()){
 		    				System.out.println("A merge job starts after waiting too long : "+ filename);
 		    				for(int boxInd = 0;boxInd<config.getBoxNum();boxInd++){
-		    					mergeInst.getDistributed()[boxInd] = config.getDistributedPath()[boxInd] + filename;;
+		    					if(mergeInst.getDistributed()[boxInd]==null)
+		    						{
+		    							mergeInst.getDistributed()[boxInd] = "data/temp/"+boxInd + filename;
+		    						}
 							}
 		    				Version version = new Version(filename,config);
 							indexTree.addNewVersion(version);	//Add this version to the IndexTree			
