@@ -58,7 +58,7 @@ public class FileUtils {
 			// file.mkdirs();
 			if (file.isDirectory()) {
 				file.mkdir();
-			} else if (file.isFile()) {
+			} else {
 				try {
 					file.createNewFile();
 				} catch (IOException e) {
@@ -232,21 +232,22 @@ public class FileUtils {
 		try {
 			// FileUtils.copyFile("data\\test\\central\\hh",
 			// "data\\test\\box1\\gg\\hh");
-			String dir = "data/test/movie.mp4";
-			File file = new File(dir);
+//			String dir = "data/test/movie.mp4";
+			File file = new File("data/temp/6/Poem.txt_e17d944edee69ada796201abd231c8ed");
+			FileUtils.createFile("data/temp/6/Poem.txt_e17d944edee69ada796201abd231c8ed");
 			// List<File> fileList=getFilesIn(file);
 			// for(File x:fileList)
 			// System.out.println(x.getPath());
 			// FileUtils.deleteFile("data\\test\\box1\\hh");
-			 FileUtils.deleteDir(new File("C:\\Users\\Zhenbi Hu\\Dropbox\\workspace\\Data\\CyBox1\\cy"));
-			while (true) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				System.out.println(FileUtils.isFileUnlocked(file));
-			}
+//			 FileUtils.deleteDir(new File("C:\\Users\\Zhenbi Hu\\Dropbox\\workspace\\Data\\CyBox1\\cy"));
+//			while (true) {
+//				try {
+//					Thread.sleep(1000);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//				System.out.println(FileUtils.isFileUnlocked(file));
+//			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
