@@ -25,7 +25,8 @@ public class Main implements  ActionListener{
 //	static List<MappingMethod> methods;
 	static Choice serverNum,errorNum;
 	static TextField[] serverLocations;
-	static TextField centralLocation,coefficients;	
+	static TextField centralLocation;	
+	static JTextArea coefficients;
 	public Main(){
 		
 	}
@@ -188,13 +189,35 @@ public class Main implements  ActionListener{
         lblCoef.setSize(250,25);       
         additionGUI.add(lblCoef);
         lblCoef.setLocation(5, 60);
-        coefficients = new TextField();
+        coefficients = new JTextArea();
         coefficients.setSize(180,75);
-        coefficients.addActionListener(this);
+//        coefficients.
+//        coefficients.addActionListener(this);
         additionGUI.add(coefficients);
         coefficients.setLocation(110, 90);
         
-       
+        int p = errors*2;
+		int d = servers-p;
+		
+		double [][] coe=null;
+		if(d==2){
+			coe = ParityConfig.coe2;				
+		}else if(d==3){
+			coe = ParityConfig.coe3;
+		}else if(d ==4 ){
+			coe = ParityConfig.coe4;
+		}
+		String text = "";
+		for(int i=0;i<p;i++){
+			String line = "coefficent"+(i+1)+" ";
+			for(int j=0;j<d-1;j++){
+				line =line + coe[i][j]+",";
+			}
+			line = line + coe[i][d-1];
+			text = text + line + "\n";
+		}
+		coefficients.setText(text);
+		
     	next = new JButton("Confirm");   	
     	next.setSize(90, 30);
     	next.addActionListener(this);
@@ -250,10 +273,19 @@ public class Main implements  ActionListener{
 	        	
         	}else if(step==1){//Determine the server numbers
         		servers = Integer.parseInt(serverNum.getSelectedItem());
-        		System.out.println(servers+" servers would be used!");
-        		base=this.createServerSelectionPanel();
-	        	base.setVisible(true);
-	        	frame.setContentPane(base);
+        		errors = Integer.parseInt(errorNum.getSelectedItem());
+        		System.out.println(servers+" servers would be used!"+errors +" errors are allowed!");
+        		if(errors*2>=servers){
+        			System.out.println("Error Number is Too Large!");
+        			step = 0;
+        			base=this.createServerNumPanel();
+    	        	base.setVisible(true);
+    	        	frame.setContentPane(base);
+        		}else{
+	        		base=this.createServerSelectionPanel();
+		        	base.setVisible(true);
+		        	frame.setContentPane(base);
+        		}
         	}else if(step==2){
 //        		errors = Integer.parseInt(errorNum.getSelectedItem());
 //        		System.out.println(errors+" malicious servers can be tolerated!");
@@ -261,17 +293,19 @@ public class Main implements  ActionListener{
 	        	base.setVisible(true);
 	        	frame.setContentPane(base);
         	}else if(step==3){//Validating all parameters
-        		errors = Integer.parseInt(errorNum.getSelectedItem());
+        		
         		System.out.println(errors+" malicious servers can be tolerated!");
         		int p = errors*2;
         		int d = servers-p;
+        		
         		double[][] coefts = new double[p][d];
         		String coefText = coefficients.getText();
         		
         		try{
-        			String[] lines = coefText.split(";");
+        			String[] lines = coefText.split("\n");
         			for(int i=0;i<p;i++){
-        				String[] nums = lines[i].split(",");
+        				String line = lines[i].split(" ")[1];
+        				String[] nums = line.split(",");
         				for(int j=0;j<d;j++){
         					coefts[i][j]=Double.parseDouble(nums[j]);
         				}
@@ -279,10 +313,14 @@ public class Main implements  ActionListener{
 //        			ParityConfig pc = new ParityConfig();
 //        			ParityConfig.isValid(coefts);
         		}catch(Exception er){
-        			
+        			step = 2;
+        			System.out.println("Coefficients Wrong!");
+            		base=this.createAdditionalPanel();
+    	        	base.setVisible(true);
+    	        	frame.setContentPane(base);
         		}
         		
-        	}else{
+        	
 //        		config.setCentralPath(centralLocation.getText());
     			String[] dis = new String[servers];
     			for(int i=0;i<servers;i++)
@@ -318,12 +356,22 @@ public class Main implements  ActionListener{
 	        		disPath=disPath+","+dis[i];
 	        	writer.writeline("DistributedPath	"+disPath);
     			
-	        	writer.writeline("numDataServers	3");
-	        	writer.writeline("numParityServers	4");
-	        	writer.writeline("coefficent1	0.18,0.32,0.5");
-	        	writer.writeline("coefficent2	0.2,0.3,0.5");
-	        	writer.writeline("coefficent3	0.5,0.4,0.1");
-	        	writer.writeline("coefficent4	0.35,0.45,0.2");
+	        
+	        	writer.writeline("numDataServers	"+d);
+	        	writer.writeline("numParityServers	"+p);
+	        	
+//	        	writer.writeline("coefficent1	0.18,0.32,0.5");
+//	        	writer.writeline("coefficent2	0.2,0.3,0.5");
+//	        	writer.writeline("coefficent3	0.5,0.4,0.1");
+//	        	writer.writeline("coefficent4	0.35,0.45,0.2");
+	        	for(int i=0;i<p;i++){
+	    			String line = "coefficent"+(i+1)+" ";
+	    			for(int j=0;j<d-1;j++){
+	    				line =line + coefts[i][j]+",";
+	    			}
+	    			line = line + coefts[i][d-1];
+	    			writer.writeline(line);
+	    		}
 	        	writer.writeline("extend	100");
 	        	
 	        	config = new Configure(Configure.CONFIGPATH);

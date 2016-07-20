@@ -18,15 +18,15 @@ public class ParityConfig {
 	
 	
 	//2 data servers, while 2 - 6 parity servers
-	private static double[][] coe2 = new double[][]{{0.31, 0.69}, {0.21, 0.79}, 
+	public static double[][] coe2 = new double[][]{{0.31, 0.69}, {0.21, 0.79}, 
 			{0.65, 0.35}, {0.87, 0.13}, {0.75, 0.25}, {0.56, 0.44}};
 	
 	//3 data servers, while 2 - 6 parity servers
-	private static double[][] coe3 = new double[][]{{0.18, 0.32, 0.5}, {0.2, 0.3, 0.5}, 
+	public static double[][] coe3 = new double[][]{{0.18, 0.32, 0.5}, {0.2, 0.3, 0.5}, 
 			{0.5, 0.4, 0.1}, {0.35, 0.45, 0.2}, {0.12, 0.20, 0.68}, {0.14, 0.40, 0.46}};
 	
 	//4 data servers, while 2 - 6 parity servers
-	private static double[][] coe4 = new double[][]{{0.18, 0.32, 0.25, 0.25}, {0.2, 0.10, 0.62, 0.08}, 
+	public static double[][] coe4 = new double[][]{{0.18, 0.32, 0.25, 0.25}, {0.2, 0.10, 0.62, 0.08}, 
 			{0.4, 0.11, 0.37, 0.12}, {0.35, 0.12, 0.13, 0.4}, {0.22, 0.44, 0.16, 0.18}, 
 			{0.48, 0.19, 0.25, 0.08}};
 	
