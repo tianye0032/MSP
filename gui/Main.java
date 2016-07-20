@@ -5,6 +5,7 @@ import javax.swing.*;
 import MSP.file.mapping.MappingMethod;
 import MSP.server.central.CentralServer;
 import MSP.server.central.Configure;
+import MSP.server.central.config.parity.ParityConfig;
 import MSP.utils.Writer;
 
 import java.awt.Choice;
@@ -171,27 +172,27 @@ public class Main implements  ActionListener{
         JPanel additionGUI = new JPanel();
         additionGUI.setLayout(null);
         
-        Label lblEN = new Label("Maximal Errors : "); 
-        lblEN.setSize(100,25);       
-        additionGUI.add(lblEN);
-        lblEN.setLocation(30, 20);
-        
-        errorNum = new Choice();
-    	for(int i=1;i<(servers+1)/2;i++)
-    		errorNum.addItem(i+"");
-    	errorNum.setSize(100, 30);
-    	errorNum.setLocation(110, 45);
-    	additionGUI.add(errorNum);
+//        Label lblEN = new Label("Maximal Errors : "); 
+//        lblEN.setSize(100,25);       
+//        additionGUI.add(lblEN);
+//        lblEN.setLocation(30, 20);
+//        
+//        errorNum = new Choice();
+//    	for(int i=1;i<(servers+1)/2;i++)
+//    		errorNum.addItem(i+"");
+//    	errorNum.setSize(100, 30);
+//    	errorNum.setLocation(110, 45);
+//    	additionGUI.add(errorNum);
         
         Label lblCoef = new Label("Coefficients : (use ',' and ';' to seperate)"); 
-        lblCoef.setSize(100,25);       
+        lblCoef.setSize(250,25);       
         additionGUI.add(lblCoef);
         lblCoef.setLocation(5, 60);
         coefficients = new TextField();
         coefficients.setSize(180,75);
         coefficients.addActionListener(this);
         additionGUI.add(coefficients);
-        coefficients.setLocation(110, 80);
+        coefficients.setLocation(110, 90);
         
        
     	next = new JButton("Confirm");   	
@@ -264,7 +265,22 @@ public class Main implements  ActionListener{
         		System.out.println(errors+" malicious servers can be tolerated!");
         		int p = errors*2;
         		int d = servers-p;
-        		double[][] coeff = new double[p][d];
+        		double[][] coefts = new double[p][d];
+        		String coefText = coefficients.getText();
+        		
+        		try{
+        			String[] lines = coefText.split(";");
+        			for(int i=0;i<p;i++){
+        				String[] nums = lines[i].split(",");
+        				for(int j=0;j<d;j++){
+        					coefts[i][j]=Double.parseDouble(nums[j]);
+        				}
+        			}
+//        			ParityConfig pc = new ParityConfig();
+//        			ParityConfig.isValid(coefts);
+        		}catch(Exception er){
+        			
+        		}
         		
         	}else{
 //        		config.setCentralPath(centralLocation.getText());
