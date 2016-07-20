@@ -20,11 +20,11 @@ public class Main implements  ActionListener{
 	static JButton next;
 	static Choice methodChoise;
 	static JFrame frame;
-	static int step,servers;
+	static int step,servers,errors;
 //	static List<MappingMethod> methods;
-	static Choice serverNum;
+	static Choice serverNum,errorNum;
 	static TextField[] serverLocations;
-	static TextField centralLocation;	
+	static TextField centralLocation,coefficients;	
 	public Main(){
 		
 	}
@@ -50,6 +50,11 @@ public class Main implements  ActionListener{
     	methodGUI.add(methodChoise);
     	methodChoise.setSize(300, 30);
     	methodChoise.setLocation(30, 40);
+    	
+    	
+    	methodChoise.setEnabled(false);
+    	methodChoise.select(4);
+    	
     	next = new JButton("Next");
     	next.setSize(120, 30);
     	next.addActionListener(this);    	
@@ -64,19 +69,41 @@ public class Main implements  ActionListener{
         JPanel numGUI = new JPanel();
         numGUI.setLayout(null);
         
+        
+        Label lblSV = new Label("Server Numbers : "); 
+        lblSV.setSize(100,25);       
+        numGUI.add(lblSV);
+        lblSV.setLocation(30, 15);
         serverNum = new Choice();
     	for(int i=3;i<8;i++)
     		serverNum.addItem(i+"");
-    	serverNum.setSize(300, 30);
-    	serverNum.setLocation(30, 40);
+    	
+    	serverNum.setSize(100, 30);
+    	serverNum.setLocation(110, 40);
     	numGUI.add(serverNum);
+    	
+    	Label lblEN = new Label("Maximal Errors : "); 
+        lblEN.setSize(100,25);       
+        numGUI.add(lblEN);
+        lblEN.setLocation(30, 60);
+         
+        errorNum = new Choice();
+     	for(int i=1;i<4;i++)
+     		errorNum.addItem(i+"");
+     	errorNum.setSize(100, 30);
+     	errorNum.setLocation(110, 85);
+     	numGUI.add(errorNum);
+    	
+    	
     	int selected = methodChoise.getSelectedIndex();
     	switch (selected){
     		case 0:
     			serverNum.select(0);
     			serverNum.setEnabled(false);
+    			errorNum.setEnabled(false);
     			break;
     		case 1://Do nothing
+    			errorNum.setEnabled(false);
     			break;
     		case 2:
     			System.out.println("MergeSplit Method");
@@ -87,14 +114,11 @@ public class Main implements  ActionListener{
     			break;
     		case 4:
     			serverNum.select(4);
-    			serverNum.setEnabled(false);
+//    			serverNum.setEnabled(false);
+    			errorNum.select(1);
     			break;
-    		default:System.out.println("DuplicateTwice Method Selected1");
-    	}
-    	
-    	
-    	
-    	
+    		default:System.out.println("DuplicateTwice Method Selected!");
+    	} 
     	next = new JButton("Next");   	
     	next.setSize(120, 30);
     	next.addActionListener(this);
@@ -132,18 +156,51 @@ public class Main implements  ActionListener{
         	serverGUI.add(serverLocations[i]);
         	serverLocations[i].setLocation(110, i*27+55);
         }
-    	
-    	
-    	
-    	
-    	
-    	next = new JButton("Confirm");   	
+    	next = new JButton("Next");   	
     	next.setSize(90, 30);
     	next.addActionListener(this);
     	serverGUI.add(next);
     	next.setLocation(280, 220);
     	serverGUI.setOpaque(true);
         return serverGUI;
+    }
+    public JPanel createAdditionalPanel (){
+
+        // To select how many malicious servers are tolerated,
+    	// and coefficients
+        JPanel additionGUI = new JPanel();
+        additionGUI.setLayout(null);
+        
+        Label lblEN = new Label("Maximal Errors : "); 
+        lblEN.setSize(100,25);       
+        additionGUI.add(lblEN);
+        lblEN.setLocation(30, 20);
+        
+        errorNum = new Choice();
+    	for(int i=1;i<(servers+1)/2;i++)
+    		errorNum.addItem(i+"");
+    	errorNum.setSize(100, 30);
+    	errorNum.setLocation(110, 45);
+    	additionGUI.add(errorNum);
+        
+        Label lblCoef = new Label("Coefficients : (use ',' and ';' to seperate)"); 
+        lblCoef.setSize(100,25);       
+        additionGUI.add(lblCoef);
+        lblCoef.setLocation(5, 60);
+        coefficients = new TextField();
+        coefficients.setSize(180,75);
+        coefficients.addActionListener(this);
+        additionGUI.add(coefficients);
+        coefficients.setLocation(110, 80);
+        
+       
+    	next = new JButton("Confirm");   	
+    	next.setSize(90, 30);
+    	next.addActionListener(this);
+    	additionGUI.add(next);
+    	next.setLocation(280, 220);
+    	additionGUI.setOpaque(true);
+        return additionGUI;
     }
   public JPanel createSummaryPanel (){
 
@@ -182,9 +239,9 @@ public class Main implements  ActionListener{
 	        			System.out.println("HammingCode Method Selected!");
 	        			break;
 	        		case 4:
-	        			System.out.println("QPC Method Selected1");
+	        			System.out.println("QPC Method Selected!");
 	        			break;
-	        		default:System.out.println("DuplicateTwice Method Selected1");
+	        		default:System.out.println("DuplicateTwice Method Selected!");
 	        	}
 	        	base=this.createServerNumPanel();
 	        	base.setVisible(true);
@@ -197,6 +254,19 @@ public class Main implements  ActionListener{
 	        	base.setVisible(true);
 	        	frame.setContentPane(base);
         	}else if(step==2){
+//        		errors = Integer.parseInt(errorNum.getSelectedItem());
+//        		System.out.println(errors+" malicious servers can be tolerated!");
+        		base=this.createAdditionalPanel();
+	        	base.setVisible(true);
+	        	frame.setContentPane(base);
+        	}else if(step==3){//Validating all parameters
+        		errors = Integer.parseInt(errorNum.getSelectedItem());
+        		System.out.println(errors+" malicious servers can be tolerated!");
+        		int p = errors*2;
+        		int d = servers-p;
+        		double[][] coeff = new double[p][d];
+        		
+        	}else{
 //        		config.setCentralPath(centralLocation.getText());
     			String[] dis = new String[servers];
     			for(int i=0;i<servers;i++)
@@ -247,12 +317,14 @@ public class Main implements  ActionListener{
 	        	frame.setContentPane(base);
 	        	CentralServer cs = new CentralServer(config);
     			cs.start();
-        	}else{
-        		
         	}
         				
         	step++;
         }
+//        else if(e.getSource() == serverNum){
+//        	servers = Integer.parseInt(serverNum.getSelectedItem());
+//        	System.out.println(servers+"!!");
+//        }
        
     }
 
