@@ -12,8 +12,8 @@ import MSP.server.central.Configure;
 
 public class QPC {
 	private double[][] coefficient;		
-	private int row;
-	private int column;
+	private int row;   //num of parity servers
+	private int column;  //num of data servers 
 	
 	private int extend;   //the multiple to extend the coefficient
 	
@@ -26,7 +26,8 @@ public class QPC {
 	 * @param coefficient
 	 */
 	public QPC(double[][] coefficient) {
-		this.extend = Configure.getIntValue(Configure.EXTEND);
+//		this.extend = Configure.getIntValue(Configure.EXTEND);
+		this.extend = 100;
 		this.basic = new BasicMatrix();
 		this.coefficient = basic.mutiply(coefficient, extend);
 		this.row = coefficient.length;
@@ -83,15 +84,44 @@ public class QPC {
 		return true;
 	}
 	
-	public List<Long> correction(long[] codeword) {
-		List<Long> original = new ArrayList<Long>();
-//		long[] parities = new long[row];
-		Server[] servers = new Server[row + column];
+	public List<Integer> captureErrServer(long[] originalData, long[] codeword) {
+		List<Integer> res = new ArrayList<Integer>();
+		List<Long> original = convertArrayLongToList(originalData);
+		List<Long> newParity = calParity(original);
 		for (int i = 0; i < column; i++) {
-			original.add(codeword[i]);
+			if (original.get(i) != codeword[i]) {
+				res.add(i);
+			}
+		}
+		for (int i = 0; i < row; i++) {
+			if (newParity.get(i) != codeword[column + i]) {
+				res.add(column + i);
+			}
 		}
 		
-		double[][] extendCoeffi = equationSystem(original);
+		return res;
+	}
+	
+	
+	
+	private List<Long> convertArrayLongToList(long[] originalData) {
+		List<Long> original = new ArrayList<Long>();
+		for (int i = 0; i < originalData.length; i++) {
+			original.add(originalData[i]);
+		}
+		return original;
+	}
+
+	public List<Long> correction(long[] codeword) {
+		List<Long> original = new ArrayList<Long>();
+		for (int i = 0; i < column; i++) {
+			original.add(codeword[i]);
+		}		
+		
+//		List<Long> original = expandOriginalData(codeword);  //extend the data from data servers
+		Server[] servers = new Server[row + column];
+		
+		double[][] extendCoeffi = equationSystem();
 		
 		for (int i = 0; i < column; i++) {
 			servers[i] = new Server();
@@ -106,11 +136,21 @@ public class QPC {
 		}
 		
 		List<List<Server>> subsets = subsets(servers);
-
-		return mostPopularSol(subsets);
+		
+		List<Long> res = mostPopularSol(subsets);
+		
+		return res;
 	}
 	
-	private double[][] equationSystem(List<Long> original) {
+	private List<Long> expandOriginalData(long[] codeword) {
+		List<Long> original = new ArrayList<Long>();
+		for (int i = 0; i < column; i++) {
+			original.add(codeword[i]);
+		}
+		return original;
+	}
+	
+	private double[][] equationSystem() {
 		double[][] extendCoeffi = new double[row + column][column];
 		for (int i = 0; i < column; i++) {
 			extendCoeffi[i][i] = 1;
@@ -232,9 +272,18 @@ public class QPC {
 
 	public static void main(String[] args){
 //		long[] B = new long[]{1, 2, 3, 4, 5};
-//		double[][] A = new double[][]{{1, 2, 7}, {2, 3, 5}, {5, 4, 1}};
-		double[][] A = new double[][]{{1, 2, 7}, {2, 3, 5}, {3, 2, 1}, {4, 5, 2}, {1, 3, 5}};
-		double[] B = new double[]{2600, 2300, 1000, 2000, 2200};
+//		double[][] A = new double[][]{{1, 2, 7}, {2, 3, 5}, {5, 4, 1}};		
+		double[][] A = new double[][]{{1, 2, 7}, {2, 3, 5}, {5, 4, 1}, {4.2, 2.8, 3}, {1.8, 3.7, 4.5}};
+		double[] C = new double[]{1, 2, 3};
+		double[] B = new double[]{2600, 2300, 1900, 2300, 2200};
+		
+//		BasicMatrix bas = new BasicMatrix();
+//		double[] mul = bas.mutiply(A, C);
+//		System.out.println("-----mul: ");
+//		for (int i = 0; i < mul.length; i++) {
+//			System.out.println(mul[i]);
+//		}
+		
 //		List<List<Long>> res = new QPC(A).subsets(B);
 		
 //		for (int i = 0; i < res.size(); i++) {
@@ -248,10 +297,14 @@ public class QPC {
 //		double[][] newCoeff = new QPC(A).equationSystem();
 //	
 //		
-		List<Long> res = new QPC(A).correction(new long[]{1, 2, 3, 2000, 2300, 1000, 2000, 2200});
+		List<Long> res = new QPC(A).correction(new long[]{100, 200, 300, 2600, 2300, 1600, 1900, 2300});
 		for (int i = 0; i < res.size(); i++) {
 			System.out.println(res.get(i));
 		}
+		
+		
+		
+		
 		
 	}
 }

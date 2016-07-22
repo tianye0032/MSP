@@ -46,7 +46,7 @@ public class ParityMapping implements MappingMethod {
 	public boolean merge(String[] source, String target) {
 		init(target, source);
 		int len = source.length;	
-		
+		List<Integer> errorServers = new ArrayList<Integer>();
 		List<DataInputStream> inList = new ArrayList<DataInputStream>();
 		try {
 			DataOutputStream out = new DataOutputStream(new FileOutputStream(target));
@@ -58,7 +58,7 @@ public class ParityMapping implements MappingMethod {
 			int count = len;	
 			HashSet<Integer> set = new HashSet<Integer>();
  			List<Long> previousOrig = new ArrayList<Long>();
-			while (count > (numDataSer + numParitySer / 2)) {
+			while (count >= (numDataSer + numParitySer / 2)) {
 				long[] codeword = new long[len];
 				long[] originalData = new long[numDataSer];
 				
@@ -80,15 +80,21 @@ public class ParityMapping implements MappingMethod {
 						codeword[numDataSer + k] = inList.get(numDataSer + k).readLong();
 					} else {
 						codeword[numDataSer + k] = 0l;
-						if (!set.contains(k)) {
+//						if (!set.contains(k)) {
+//							count--;
+//							set.add(k);
+//						}
+						if (!set.contains(numDataSer + k)) {
 							count--;
-							set.add(k);
+							set.add(numDataSer + k);
 						}
 					}
 				}
-				if (count > (numDataSer + numParitySer / 2)) {
+				if (count >= (numDataSer + numParitySer / 2)) {
 					if (!qpc.authenticate(codeword)) {
 						originalData = Casting.listToLong(qpc.correction(codeword));
+						List<Integer> errorSer = qpc.captureErrServer(originalData, codeword);
+						addToErrorServs(errorServers, errorSer);			
 					} else {
 						originalData = Arrays.copyOfRange(codeword, 0, numDataSer);
 					}
@@ -121,8 +127,26 @@ public class ParityMapping implements MappingMethod {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		outprint(errorServers);
 		return true;
+	}
+	
+	private void addToErrorServs(List<Integer> errorSers, List<Integer> error) {
+		for (int i = 0; i < error.size(); i++) {
+			if (!errorSers.contains(error.get(i))) {
+				errorSers.add(error.get(i));
+			}
+		}		
+	}
+
+	private void outprint(List<Integer> errorServers) {
+		if (errorServers.size() == 0) {
+			return;
+		}
+		System.out.println("The following servers are error: ");
+		for (int i = 0; i < errorServers.size(); i++) {
+			System.out.println("Server: " + errorServers.get(i));
+		}
 	}
 
 	private ArrayList<Byte> clearReplenish(byte[] lastBytes) {
@@ -290,7 +314,7 @@ public class ParityMapping implements MappingMethod {
 			target[i] = "data\\test\\box" + i + "\\hh";
 		}
 		
-		par.split("data\\test\\central\\hh", target);
+//		par.split("data\\test\\central\\hh", target);
 //		
 		par.merge(target, "data\\test\\central\\hh");
 		

@@ -35,7 +35,7 @@ public class BasicMatrix {
 			if (Math.abs(matrixA.det()) < 0.0000001) {				
 				
 				
-				System.out.println("not valid");			
+				System.out.println("BasicMatrix: " + matrixA.det() + "is not valid");			
 				
 				return null;
 			}
@@ -77,7 +77,7 @@ public class BasicMatrix {
 	}
 	
 	public static void main(String[] args){
-		double[][] A = new double[][]{{1, 2, 7}, {2, 3, 5}, {3, 2, 1}, {4, 5, 2}, {1, 3, 5}};
+//		double[][] A = new double[][]{{1, 2, 7}, {2, 3, 5}, {3, 2, 1}, {4, 5, 2}, {1, 3, 5}};
 //		double[][] A = new double[][]{{0.1, 0.2, 0.7}, {0.2, 0.3, 0.5}, {0.5, 0.4, 0.1}};
 //		double[][] A = new double[][]{{0.1, 0.2, 0}, {0, 1, 0}, {0, 0, 1}};
 //		double[] B = new double[]{21, 21, 19};
@@ -89,12 +89,17 @@ public class BasicMatrix {
 		BasicMatrix basic = new BasicMatrix();
 		
 //		double[] C = basic.divide(A, B);
-		double[] C = basic.mutiply(A, B);		
+//		double[] C = basic.mutiply(A, B);		
 //		double[][] D = basic.mutiply(A, 100);
-		for (int i = 0; i < C.length; i++) {
-			System.out.println(C[i]  + " | " + Math.round(C[i]));
-		}
+//		for (int i = 0; i < C.length; i++) {
+//			System.out.println(C[i]  + " | " + Math.round(C[i]));
+//		}
 		
+		double[] A = new double[]{1399813492, 1746944872, 1768841504};
+		basic.roundMatrix(A);
+		for (int j = 0; j < A.length; j++) {
+			System.out.println(A[j]);
+		}
 //		for (int i = 0; i < D.length; i++) {
 //			for (int j = 0; j < D[0].length; j++) {
 //				System.out.println(D[i][j]);

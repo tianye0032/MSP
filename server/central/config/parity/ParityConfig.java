@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import MSP.file.mapping.parity.compute.BasicMatrix;
-import MSP.file.mapping.parity.compute.Server;
-import MSP.server.central.Configure;
 
 public class ParityConfig {
 
