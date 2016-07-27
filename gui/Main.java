@@ -19,6 +19,7 @@ public class Main implements  ActionListener{
 	static Configure config;
 	static JPanel base;
 	static JButton next;
+	static JButton pre;
 	static Choice methodChoise;
 	static JFrame frame;
 	static int step,servers,errors;
@@ -126,6 +127,11 @@ public class Main implements  ActionListener{
     	next.addActionListener(this);
     	numGUI.add(next);
     	next.setLocation(220, 200);
+    	pre = new JButton("Previous");   	
+    	pre.setSize(120, 30);
+    	pre.addActionListener(this);
+    	numGUI.add(pre);
+    	pre.setLocation(220, 235);
     	numGUI.setOpaque(true);
         return numGUI;
     }
@@ -162,7 +168,13 @@ public class Main implements  ActionListener{
     	next.setSize(90, 30);
     	next.addActionListener(this);
     	serverGUI.add(next);
-    	next.setLocation(280, 220);
+    	next.setLocation(280, 200);
+    	
+    	pre = new JButton("Previous");   	
+    	pre.setSize(90, 30);
+    	pre.addActionListener(this);
+    	serverGUI.add(pre);
+    	pre.setLocation(280, 235);
     	serverGUI.setOpaque(true);
         return serverGUI;
     }
@@ -222,7 +234,13 @@ public class Main implements  ActionListener{
     	next.setSize(90, 30);
     	next.addActionListener(this);
     	additionGUI.add(next);
-    	next.setLocation(280, 220);
+    	next.setLocation(280, 200);
+    	
+    	pre = new JButton("Previous");   	
+    	pre.setSize(90, 30);
+    	pre.addActionListener(this);
+    	additionGUI.add(pre);
+    	pre.setLocation(280, 235);
     	additionGUI.setOpaque(true);
         return additionGUI;
     }
@@ -242,7 +260,6 @@ public class Main implements  ActionListener{
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == next)
         {
-        	
         	base.setVisible(false);
         	System.out.println(step);
         	if(step==0)//Select a method
@@ -365,7 +382,7 @@ public class Main implements  ActionListener{
 //	        	writer.writeline("coefficent3	0.5,0.4,0.1");
 //	        	writer.writeline("coefficent4	0.35,0.45,0.2");
 	        	for(int i=0;i<p;i++){
-	    			String line = "coefficent"+(i+1)+" ";
+	    			String line = "coefficent"+(i+1)+"	";
 	    			for(int j=0;j<d-1;j++){
 	    				line =line + coefts[i][j]+",";
 	    			}
@@ -385,10 +402,24 @@ public class Main implements  ActionListener{
         				
         	step++;
         }
-//        else if(e.getSource() == serverNum){
-//        	servers = Integer.parseInt(serverNum.getSelectedItem());
-//        	System.out.println(servers+"!!");
-//        }
+        else if(e.getSource() == pre){        	
+        	base.setVisible(false);
+        	System.out.println("Go back!!");
+        	if(step==1){        		
+	        	base=this.createMethodSelectionPanel();
+	        	base.setVisible(true);
+	        	frame.setContentPane(base);	        	
+        	}else if(step ==2){
+        		base=this.createServerNumPanel();
+	        	base.setVisible(true);
+	        	frame.setContentPane(base);	  
+        	}else if(step == 3){
+        		base=this.createServerSelectionPanel();
+	        	base.setVisible(true);
+	        	frame.setContentPane(base);	 
+        	}
+        	step--;
+        }
        
     }
 
