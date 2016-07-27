@@ -143,7 +143,7 @@ public class ParityMapping implements MappingMethod {
 		if (errorServers.size() == 0) {
 			return;
 		}
-		System.out.println("The following servers are error: ");
+		System.out.println("--------------The following servers are error: --------------");
 		for (int i = 0; i < errorServers.size(); i++) {
 			System.out.println("Server: " + errorServers.get(i));
 		}
