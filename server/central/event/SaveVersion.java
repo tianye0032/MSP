@@ -7,10 +7,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import MSP.utils.FileUtils;
 
-public class SaveVersion {
+public class SaveVersion implements Serializable {
 	private String temFileAdd = "data/temp/indexTree";
 	
 	public void saveVersion(IndexTree index) {
@@ -59,5 +60,16 @@ public class SaveVersion {
 		}
 		
 		return index;
+	}
+	
+	
+	public static void main(String[] args) {
+		SaveVersion save = new SaveVersion();
+		IndexTree index = new IndexTree();
+		index.addNewVersion(new Version("/data/test/box0/1.txt", "1234567890"));
+		save.saveVersion(index);		
+		
+		IndexTree index2 = save.recoverVersion();
+		System.out.print(index2.getLastVersion("/data/test/box0/1.txt"));
 	}
 }

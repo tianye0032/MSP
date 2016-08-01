@@ -160,7 +160,9 @@ public class CentralServer extends Thread{
 			}
 			for (int j = 0; j < remainFiles.length; j++) {
 				File temFile = new File(remainFiles[j]);
-				remList.add(temFile.getName());
+				if (!remList.contains(temFile.getName())) {
+					remList.add(temFile.getName());
+				}				
 			}						
 		}
 		//
@@ -168,6 +170,9 @@ public class CentralServer extends Thread{
 			for (int i = 0; i < remList.size(); i++) {
 				Version ver = new Version(remList.get(i), config);
 				if (index.isNewVersion(ver)) {
+					
+//					System.out.println(index.getLastVersion("re"));
+					
 					mergeCall(remList.get(i), ver);
 				}				
 			}
@@ -179,17 +184,17 @@ public class CentralServer extends Thread{
 		
 		mergeInst.setDistributed(new String[config.getBoxNum()]);
 		for (int i = 0; i < config.getDistributedPath().length; i++) {
-			mergeInst.getDistributed()[i] = config.getDistributedPath()[i]+ "/" + str;
+			mergeInst.getDistributed()[i] = config.getDistributedPath()[i] + str;
 		}
-		mergeInst.setDistributed(config.getDistributedPath());
-		mergeInst.setCentral(config.getCentralPath() + "/" + ver.getFile());
+		mergeInst.setCentral(config.getCentralPath() + ver.getFile());
+		mergeInst.setMethod(config.getMappingMethod());
 		mergeInst.setFromCentral(false);
 		mergeInst.setType(JobType.ADD);
 		mergeInst.start();
 	}
 	public static void main(String[] args)throws IOException{
 		CentralServer server = new CentralServer();
-//		server.init();
+		server.init();
 		
 		server.start();
 	        

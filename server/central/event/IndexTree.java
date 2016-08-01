@@ -49,7 +49,7 @@ public class IndexTree implements Serializable  {
 			history.add(version.getVersionId());
 			map.put(version.getFile(), history);
 			
-//			saver.saveVersion(this);   //write the indexTree to a temp file
+			saver.saveVersion(this);   //write the indexTree to a temp file
 		}
 	}
 //	public static boolean isNewVersion(Version version) {
