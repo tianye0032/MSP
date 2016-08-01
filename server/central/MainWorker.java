@@ -158,6 +158,7 @@ public class MainWorker extends Thread{
 		
 		FolderJob deleteJob = new FolderJob();				
 		deleteJob.setCentDistri(config.getCentralPath(), config.getDistributedPath(), filename);
+		deleteJob.setIndexTree(this.indexTree);
 		if (config.isFromCentral(message)) {
 			deleteJob.setFromCentral(true);
 		} else {

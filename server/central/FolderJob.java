@@ -2,6 +2,7 @@ package MSP.server.central;
 
 import java.io.File;
 
+import MSP.server.central.event.IndexTree;
 import MSP.server.central.event.Version;
 import MSP.utils.FileUtils;
 
@@ -13,6 +14,11 @@ public class FolderJob extends Thread{
 	private String central;	
 	private String[] distributed;	
 	private boolean fromCentral;
+	private IndexTree indexTree;
+	
+	public void setIndexTree(IndexTree indexTree){
+		this.indexTree = indexTree;
+	}
 	
 	public void run() {
 		if (this.type == JobType.ADD) {
@@ -31,22 +37,23 @@ public class FolderJob extends Thread{
 	}
 	
 	public void deleteNonVersionFile(String dest) {
-		dest = dest.replace('\\', '/');
-		int lastSlash = dest.lastIndexOf("/");					
+		dest = dest.replace('/', '\\');
+		int lastSlash = dest.lastIndexOf("\\");					
 		String folder = dest.substring(0, lastSlash);
 		String oldfilename = dest.substring(lastSlash + 1);
 		
 		Version ver = new Version();
 		String newfilename = ver.correctFormat(oldfilename);  //get rid of id from oldfile		
 		
-		File file = new File(folder + "/" + newfilename);
+		File file = new File(folder + "\\" + newfilename);
 		
 //		System.out.println("@@@delete from central: " + file.getAbsolutePath());
 		if (file.exists()) {
 			if (file.isFile()) {
-				String newId = createId(folder + "/" + newfilename);
+//				String newId = createId(folder + "/" + newfilename);
+				String newId = this.indexTree.getLastVersion(Configure.config.getRelativePath(folder + "\\" + newfilename));
 				String oldId = cutOutId(oldfilename);
-				if (newId.equals(oldId)) {
+				if (oldId.equals(newId)) {
 					file.delete();
 				}
 			} else {
