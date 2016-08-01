@@ -15,13 +15,13 @@ import MSP.utils.FileUtils;
 
 public class MainWorker extends Thread{
 	Configure config;
-	Map<String,InstantJob> jobPool;
+	ConcurrentHashMap<String,InstantJob> jobPool;
 //	Hashtable<String,String> messagePool;
 	ConcurrentHashMap<String,String> messagePool;
 	IndexTree indexTree;
 //	public MainWorker(Hashtable<String,String> messagePool,Configure config){
 	public MainWorker(ConcurrentHashMap<String,String> messagePool,Configure config){
-		jobPool = new HashMap<String,InstantJob>();
+		jobPool = new ConcurrentHashMap<String,InstantJob>();
 		this.messagePool = messagePool;
 		this.config = config;
 		indexTree = new IndexTree();
@@ -63,13 +63,13 @@ public class MainWorker extends Thread{
 				Version version = new Version(file.getPath(),config);
 				if (config.getType(message)==JobType.DELETE)
 					{
-						System.out.println("Delete Message Ignored!   "+version.getFile()+version.getVersionId());
+						System.out.println("Delete Message Ignored!   "+version.getFile()+"_"+version.getVersionId());
 						return;
 					}
 				
 				if (!indexTree.isNewVersion(version))
 					{
-						System.out.println("Duplicate Message Ignored!   "+version.getFile()+version.getVersionId());
+						System.out.println("Duplicate Message Ignored!   "+version.getFile()+"_"+version.getVersionId());
 						return;
 					}
 				if(config.isFromCentral(message)){					
