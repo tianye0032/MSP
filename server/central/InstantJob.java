@@ -26,7 +26,8 @@ public class InstantJob extends Thread{
 	
 	public boolean isWaitingTooLong(){
 		int threshold = 10000;
-		return (System.currentTimeMillis()-this.timestampStart>threshold)&&(count> (distributed.length-2));
+//		return ((System.currentTimeMillis()-this.timestampStart)>threshold)&&(count> (distributed.length-2));
+		return false;
 	}
 	public boolean isReady(){
 		if(fromCentral){
@@ -51,8 +52,10 @@ public class InstantJob extends Thread{
 		System.out.println("An instant job starts");
 		if(this.getType()==JobType.ADD||this.getType()==JobType.UPDATE){
 			if(this.fromCentral){
+				System.out.println("This is a split job!");
 				method.split(central, distributed);
 			}else{
+				System.out.println("This is a merge job!");
 				method.merge(distributed, central);
 			}
 		}else if(this.getType()==JobType.DELETE){
