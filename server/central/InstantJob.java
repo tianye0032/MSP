@@ -27,6 +27,12 @@ public class InstantJob extends Thread{
 	public boolean isWaitingTooLong(){
 		int threshold = 10000;
 //		return ((System.currentTimeMillis()-this.timestampStart)>threshold)&&(count> (distributed.length-2));
+		if((System.currentTimeMillis()-this.timestampStart)>threshold){
+			System.out.println("--------------------Overtime!------------------");
+			if(count>=distributed.length-2){
+				return true;
+			}
+		}
 		return false;
 	}
 	public boolean isReady(){

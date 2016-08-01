@@ -124,7 +124,7 @@ public class MainWorker extends Thread{
 						
 //						mergeInst.getDistributed()[boxInd-1] = filePath;
 						
-						mergeInst.getDistributed()[boxInd-1] = config.getDistributedPath()[boxInd-1] + filename;;
+						mergeInst.getDistributed()[boxInd-1] = config.getDistributedPath()[boxInd-1] + filename;
 						
 						mergeInst.count++;	
 						if(mergeInst.isReady()){	
