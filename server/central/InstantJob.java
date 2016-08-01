@@ -25,8 +25,8 @@ public class InstantJob extends Thread{
 	}
 	
 	public boolean isWaitingTooLong(){
-		int threshold = 5000;
-		return (System.currentTimeMillis()-this.timestampStart>threshold)&&(count> distributed.length/2);
+		int threshold = 10000;
+		return (System.currentTimeMillis()-this.timestampStart>threshold)&&(count> (distributed.length-2));
 	}
 	public boolean isReady(){
 		if(fromCentral){
