@@ -1,15 +1,20 @@
 package MSP.server.central.event;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class IndexTree {
+public class IndexTree implements Serializable  {
 	
 	//store the path: data/test/box1/a  0f719c0a5106ec4fd26879ad9d621edd
 //	public static HashSet<String> versionSet = new HashSet<String>();
 //	public static HashSet<Version> versionSet = new HashSet<Version>();
+	
+	private static final long serialVersionUID = -1516310389508404938L;
+	
+	private SaveVersion saver = new SaveVersion();
 	
 	private HashMap<String,List<String>> map;
 	public IndexTree(){
@@ -43,6 +48,8 @@ public class IndexTree {
 			List<String> history = new ArrayList<String>();
 			history.add(version.getVersionId());
 			map.put(version.getFile(), history);
+			
+//			saver.saveVersion(this);   //write the indexTree to a temp file
 		}
 	}
 //	public static boolean isNewVersion(Version version) {

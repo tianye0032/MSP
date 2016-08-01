@@ -6,8 +6,13 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Pipe;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import MSP.server.central.event.IndexTree;
+import MSP.server.central.event.SaveVersion;
+import MSP.server.central.event.Version;
 import MSP.server.watcher.WatchDir;
 import MSP.utils.StringUtils;
 
@@ -141,12 +146,55 @@ public class CentralServer extends Thread{
 		    }
 	}
 	
+	public void init() {
+		SaveVersion saver = new SaveVersion();
+		IndexTree index = saver.recoverVersion();
+		String[] distributed = config.getDistributedPath();
+		List<String> remList = new ArrayList<String>();
+		//get the remaining filename
+		for (int i = 0; i < distributed.length; i++) {
+			File file = new File(distributed[i]);
+			String[] remainFiles = file.list();
+			if (remainFiles == null) {
+				break;
+			}
+			for (int j = 0; j < remainFiles.length; j++) {
+				File temFile = new File(remainFiles[j]);
+				remList.add(temFile.getName());
+			}						
+		}
+		//
+		if (remList.size() != 0) {
+			for (int i = 0; i < remList.size(); i++) {
+				Version ver = new Version(remList.get(i), config);
+				if (index.isNewVersion(ver)) {
+					mergeCall(remList.get(i), ver);
+				}				
+			}
+		}		
+	}
+	
+	private void mergeCall(String str, Version ver) {
+		InstantJob mergeInst = new InstantJob();
+		
+		mergeInst.setDistributed(new String[config.getBoxNum()]);
+		for (int i = 0; i < config.getDistributedPath().length; i++) {
+			mergeInst.getDistributed()[i] = config.getDistributedPath()[i]+ "/" + str;
+		}
+		mergeInst.setDistributed(config.getDistributedPath());
+		mergeInst.setCentral(config.getCentralPath() + "/" + ver.getFile());
+		mergeInst.setFromCentral(false);
+		mergeInst.setType(JobType.ADD);
+		mergeInst.start();
+	}
 	public static void main(String[] args)throws IOException{
 		CentralServer server = new CentralServer();
+//		server.init();
 		
 		server.start();
 	        
 	}
+	
 	
 	
 	
