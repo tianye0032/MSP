@@ -43,7 +43,8 @@ public class SaveVersion implements Serializable {
 				return null;
 			}
 			is = new ObjectInputStream(new FileInputStream(temFileAdd));
-			index = (IndexTree) is.readObject(); 			
+			index = (IndexTree) is.readObject(); 
+			is.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -51,12 +52,12 @@ public class SaveVersion implements Serializable {
 		} catch (ClassNotFoundException e) {  
             e.printStackTrace();  
         } finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try {
+//				
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 		
 		return index;

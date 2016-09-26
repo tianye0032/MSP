@@ -149,6 +149,10 @@ public class CentralServer extends Thread{
 	public void init() {
 		SaveVersion saver = new SaveVersion();
 		IndexTree index = saver.recoverVersion();
+		if (index == null) {
+			return;
+		}
+		
 		String[] distributed = config.getDistributedPath();
 		List<String> remList = new ArrayList<String>();
 		//get the remaining filename
