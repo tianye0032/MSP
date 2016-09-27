@@ -137,7 +137,11 @@ public class CentralServer extends Thread{
 		 while(true){
 		    	try{		    		
 			    	String message = this.getMessage(); 
-			    	this.processMessage(message);	   	
+			    	
+			    	if (!message.contains(".DS_Store")) {
+			    		this.processMessage(message);	   	
+			    	}			    	
+			    	
 
 		    	}catch(Exception e){
 //		    		System.out.println("Error In Central Server!     "+e.getMessage());
@@ -198,7 +202,7 @@ public class CentralServer extends Thread{
 	}
 	public static void main(String[] args)throws IOException{
 		CentralServer server = new CentralServer();
-		server.init();
+//		server.intnit();
 		
 		server.start();
 	        

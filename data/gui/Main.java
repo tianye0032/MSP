@@ -14,9 +14,11 @@ import javax.swing.SwingUtilities;
 
 import MSP.data.DataOwner;
 import MSP.data.LocalServer;
+import MSP.server.central.Configure;
 
 public class Main implements  ActionListener{
-
+	private static Configure config = new Configure(Configure.CONFIGPATH);
+	
 	static JPanel base;
 	static JButton next;
 	static JFrame frame;
@@ -32,6 +34,7 @@ public class Main implements  ActionListener{
 		
 	}
 	public static void init(){
+		Configure.config = new Configure(Configure.CONFIGPATH);
 		serverNum = 5;
 		owner  = new DataOwner("data/OriginalData");
 		locals = new LocalServer[serverNum];
